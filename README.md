@@ -26,7 +26,7 @@ Rather than building an opaque hospital directory with misleading "prices starti
 
 ### 1. Local Installation
 ```bash
-cd boost
+cd medvoyage
 
 # Install dependencies
 pip install -r requirements.txt
@@ -78,7 +78,7 @@ docker run -p 8000:8000 medvoyage-marketplace
 ## 📁 Repository Structure
 
 ```
-boost/
+medvoyage/
 ├── .gitignore
 ├── .python-version               # Pinned Python 3.13 runtime
 ├── Dockerfile                    # Production container
