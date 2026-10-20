@@ -1,14 +1,21 @@
-"""Post-procedure aftercare and continuous patient recovery tracker."""
+"""Post-procedure aftercare and continuous patient recovery tracker with storage persistence."""
 
-from typing import Dict, List
+from typing import Dict, List, Optional
 from medvoyage.models import AftercareMilestone
+from medvoyage.storage import MedVoyageStorage
 
 
 class AftercareManager:
-    def __init__(self):
+    def __init__(self, storage: Optional[MedVoyageStorage] = None):
+        self._storage = storage
         self._milestones: Dict[str, List[AftercareMilestone]] = {}
 
-    def generate_plan(self, booking_id: str, treatment_category: str = "Orthopedics") -> List[AftercareMilestone]:
+    def set_storage(self, storage: MedVoyageStorage):
+        self._storage = storage
+
+    def generate_plan(
+        self, booking_id: str, treatment_category: str = "Orthopedics"
+    ) -> List[AftercareMilestone]:
         if treatment_category == "Orthopedics":
             schedule = [
                 (1, "Post-Operative Inpatient Mobility Assessment", "Gentle range of motion exercise guided by hospital physiotherapist.", False),
@@ -37,13 +44,20 @@ class AftercareManager:
             )
             for day, title, instr, telehealth in schedule
         ]
-        self._milestones[booking_id] = items
+        if self._storage:
+            self._storage.save_aftercare_milestones(booking_id, items)
+        else:
+            self._milestones[booking_id] = items
         return items
 
     def get_plan(self, booking_id: str) -> List[AftercareMilestone]:
+        if self._storage:
+            return self._storage.get_aftercare_milestones(booking_id)
         return self._milestones.get(booking_id, [])
 
     def complete_milestone(self, booking_id: str, milestone_id: str) -> bool:
+        if self._storage:
+            return self._storage.complete_aftercare_milestone(booking_id, milestone_id)
         items = self._milestones.get(booking_id, [])
         for m in items:
             if m.id == milestone_id:

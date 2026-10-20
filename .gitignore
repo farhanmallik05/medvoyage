@@ -11,3 +11,4 @@ venv/
 htmlcov/
 .env
 .DS_Store
+*.db

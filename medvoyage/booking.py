@@ -1,14 +1,19 @@
-"""Consultation booking and scheduling manager for MedVoyage."""
+"""Consultation booking and scheduling manager for MedVoyage with persistent storage integration."""
 
 from datetime import datetime, timezone
 from typing import Dict, List, Optional
 from medvoyage.catalog import get_provider_by_id
 from medvoyage.models import ConsultationBooking
+from medvoyage.storage import MedVoyageStorage
 
 
 class BookingManager:
-    def __init__(self):
+    def __init__(self, storage: Optional[MedVoyageStorage] = None):
+        self._storage = storage
         self._bookings: Dict[str, ConsultationBooking] = {}
+
+    def set_storage(self, storage: MedVoyageStorage):
+        self._storage = storage
 
     def create_booking(
         self,
@@ -30,13 +35,20 @@ class BookingManager:
             status="CONFIRMED",
             notes=notes,
         )
-        self._bookings[booking.booking_id] = booking
+        if self._storage:
+            self._storage.save_booking(booking)
+        else:
+            self._bookings[booking.booking_id] = booking
         return booking
 
     def get_booking(self, booking_id: str) -> Optional[ConsultationBooking]:
+        if self._storage:
+            return self._storage.get_booking(booking_id)
         return self._bookings.get(booking_id)
 
     def list_bookings(self) -> List[ConsultationBooking]:
+        if self._storage:
+            return self._storage.list_bookings()
         return list(self._bookings.values())
 
 

@@ -1,27 +1,87 @@
 """REST API and Web Marketplace Interface for MedVoyage.
 EthAum Venture Partners Track: Building Medical Tourism Platform.
+Includes SQLite persistence, API key authentication, clinical NLP record extractor, and catalog ingestion.
 """
 
 from datetime import datetime, timezone
+import os
 from typing import Any, Dict, List, Optional
-from fastapi import FastAPI, HTTPException, Query
+from fastapi import Depends, FastAPI, HTTPException, Query, Security
 from fastapi.responses import HTMLResponse
+from fastapi.security.api_key import APIKeyHeader
 from pydantic import BaseModel
 from medvoyage.aftercare import AFTERCARE_MANAGER
 from medvoyage.booking import BOOKING_MANAGER
 from medvoyage.catalog import DESTINATIONS, HOSPITALS, PROVIDERS, TREATMENTS, get_provider_by_id, get_treatment_by_id
+import medvoyage.catalog as cat
+from medvoyage.extractor import ExtractedClinicalInquiry, extract_clinical_inquiry
+from medvoyage.ingestion import (
+    IngestionError,
+    ingest_providers_csv,
+    ingest_providers_json,
+    ingest_treatments_csv,
+    ingest_treatments_json,
+)
 from medvoyage.matcher import match_providers_for_inquiry
 from medvoyage.models import ConsultationBooking, ItemizedQuote, MatchScore, PatientInquiry, Urgency
 from medvoyage.quote_engine import compare_quotes_for_treatment
 from medvoyage.sample_data import seed_sample_marketplace_data
+from medvoyage.storage import InMemoryMedVoyageStorage, SQLiteMedVoyageStorage
 
 app = FastAPI(
     title="MedVoyage Marketplace API",
     description="Transparent Medical Tourism Platform with AI Provider Matching & Itemized Quote Comparison.",
-    version="0.1.0",
+    version="0.2.0",
 )
 
-INQUIRIES: List[PatientInquiry] = seed_sample_marketplace_data()
+# API Security
+API_KEY_NAME = "X-API-Key"
+api_key_header = APIKeyHeader(name=API_KEY_NAME, auto_error=False)
+
+
+def verify_api_key(api_key: Optional[str] = Security(api_key_header)):
+    expected = os.environ.get("MEDVOYAGE_API_KEY")
+    if expected:
+        if not api_key or api_key != expected:
+            raise HTTPException(status_code=401, detail="Invalid or missing X-API-Key")
+    return api_key
+
+
+# Storage Backend
+db_path = os.environ.get("MEDVOYAGE_DB_PATH")
+storage = SQLiteMedVoyageStorage(db_path) if db_path else InMemoryMedVoyageStorage()
+BOOKING_MANAGER.set_storage(storage)
+AFTERCARE_MANAGER.set_storage(storage)
+
+# Sync treatments & providers with storage
+stored_treatments = storage.list_treatments()
+if stored_treatments:
+    for st in stored_treatments:
+        idx = next((i for i, t in enumerate(cat.TREATMENTS) if t.id == st.id), None)
+        if idx is not None:
+            cat.TREATMENTS[idx] = st
+        else:
+            cat.TREATMENTS.append(st)
+else:
+    for t in cat.TREATMENTS:
+        storage.save_treatment(t)
+
+stored_providers = storage.list_providers()
+if stored_providers:
+    for sp in stored_providers:
+        idx = next((i for i, p in enumerate(cat.PROVIDERS) if p.id == sp.id), None)
+        if idx is not None:
+            cat.PROVIDERS[idx] = sp
+        else:
+            cat.PROVIDERS.append(sp)
+else:
+    for p in cat.PROVIDERS:
+        storage.save_provider(p)
+
+# Seed inquiries if storage is brand new
+if not storage.list_inquiries():
+    for inq in seed_sample_marketplace_data():
+        storage.save_inquiry(inq)
 
 
 class CreateInquiryRequest(BaseModel):
@@ -44,12 +104,26 @@ class CreateBookingRequest(BaseModel):
     notes: Optional[str] = None
 
 
+class ExtractRecordsRequest(BaseModel):
+    medical_records_text: str
+
+
+class CatalogIngestRequest(BaseModel):
+    entity_type: str  # "treatment" or "provider"
+    format: str  # "json" or "csv"
+    content: str
+
+
 @app.get("/health")
 def health():
     return {
         "status": "healthy",
         "service": "MedVoyage Marketplace",
         "track": "EthAum Venture Partners Medical Tourism",
+        "storage": "SQLite" if isinstance(storage, SQLiteMedVoyageStorage) else "In-Memory",
+        "auth_enabled": bool(os.environ.get("MEDVOYAGE_API_KEY")),
+        "nlp_extractor_ready": True,
+        "catalog_ingestion_ready": True,
     }
 
 
@@ -60,12 +134,12 @@ def list_destinations():
 
 @app.get("/api/treatments")
 def list_treatments():
-    return TREATMENTS
+    return cat.TREATMENTS
 
 
 @app.get("/api/providers")
 def list_providers(specialty: Optional[str] = None, country: Optional[str] = None):
-    results = PROVIDERS
+    results = cat.PROVIDERS
     if specialty:
         results = [p for p in results if p.specialty.lower() == specialty.lower()]
     if country:
@@ -78,7 +152,12 @@ def list_hospitals():
     return HOSPITALS
 
 
-@app.post("/api/inquiries", response_model=PatientInquiry)
+@app.get("/api/inquiries", response_model=List[PatientInquiry])
+def list_inquiries():
+    return storage.list_inquiries()
+
+
+@app.post("/api/inquiries", response_model=PatientInquiry, dependencies=[Depends(verify_api_key)])
 def submit_inquiry(req: CreateInquiryRequest):
     treatment = get_treatment_by_id(req.treatment_id)
     if not treatment:
@@ -95,8 +174,51 @@ def submit_inquiry(req: CreateInquiryRequest):
         preferred_language=req.preferred_language,
         medical_records_summary=req.medical_records_summary,
     )
-    INQUIRIES.append(inq)
+    storage.save_inquiry(inq)
     return inq
+
+
+@app.post("/api/inquiries/extract-records", response_model=ExtractedClinicalInquiry)
+def extract_records(req: ExtractRecordsRequest):
+    """Parses messy, unstructured medical records or clinical notes into structured inquiry parameters."""
+    if not req.medical_records_text or len(req.medical_records_text.strip()) < 10:
+        raise HTTPException(status_code=400, detail="Medical records text must be at least 10 characters long")
+    return extract_clinical_inquiry(req.medical_records_text)
+
+
+@app.post("/api/catalog/ingest", dependencies=[Depends(verify_api_key)])
+def ingest_catalog_data(req: CatalogIngestRequest):
+    """Schema-based ingestion pipeline for treatments and providers via CSV or JSON."""
+    entity = req.entity_type.lower()
+    fmt = req.format.lower()
+
+    try:
+        if entity == "treatment":
+            if fmt == "json":
+                items, errors = ingest_treatments_json(req.content, storage=storage)
+            elif fmt == "csv":
+                items, errors = ingest_treatments_csv(req.content, storage=storage)
+            else:
+                raise HTTPException(status_code=400, detail=f"Unsupported format '{req.format}'. Use 'json' or 'csv'")
+        elif entity == "provider":
+            if fmt == "json":
+                items, errors = ingest_providers_json(req.content, storage=storage)
+            elif fmt == "csv":
+                items, errors = ingest_providers_csv(req.content, storage=storage)
+            else:
+                raise HTTPException(status_code=400, detail=f"Unsupported format '{req.format}'. Use 'json' or 'csv'")
+        else:
+            raise HTTPException(status_code=400, detail=f"Unsupported entity_type '{req.entity_type}'. Use 'treatment' or 'provider'")
+
+        return {
+            "status": "success",
+            "entity_type": entity,
+            "format": fmt,
+            "ingested_count": len(items),
+            "errors": errors,
+        }
+    except IngestionError as ie:
+        raise HTTPException(status_code=400, detail=str(ie))
 
 
 @app.post("/api/match", response_model=List[MatchScore])
@@ -112,7 +234,7 @@ def compare_quotes(treatment_id: str = Query(..., description="ID of the treatme
         raise HTTPException(status_code=404, detail=str(e))
 
 
-@app.post("/api/bookings", response_model=ConsultationBooking)
+@app.post("/api/bookings", response_model=ConsultationBooking, dependencies=[Depends(verify_api_key)])
 def create_booking(req: CreateBookingRequest):
     try:
         booking = BOOKING_MANAGER.create_booking(
@@ -143,7 +265,7 @@ def get_aftercare(booking_id: str):
     return {"booking_id": booking_id, "milestones": plan}
 
 
-@app.post("/api/aftercare/{booking_id}/complete/{milestone_id}")
+@app.post("/api/aftercare/{booking_id}/complete/{milestone_id}", dependencies=[Depends(verify_api_key)])
 def complete_aftercare_milestone(booking_id: str, milestone_id: str):
     ok = AFTERCARE_MANAGER.complete_milestone(booking_id, milestone_id)
     if not ok:
