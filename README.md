@@ -19,6 +19,9 @@ Rather than building an opaque hospital directory with misleading "prices starti
 - **Estimated Waiting Times**: Direct scheduling transparency (typically 3 to 7 days).
 - **Structured Aftercare**: 90-day continuous recovery plans with remote surgical check-ins.
 - **Verifiable Provider Credentials**: JCI accreditation records, board certifications (FRCS, American Board, EBOT), surgical volume statistics, and complication rates.
+- **Clinical Discharge NLP Extractor**: Automatically parses freeform clinical notes, surgical histories, and referral letters into structured inquiry parameters.
+- **Schema-Based Catalog Ingestion**: Supports bulk CSV and JSON ingestion for treatments and hospitals with strict Pydantic validation.
+- **SQLite Persistence & API Security**: Persistent database storage across server restarts (`MEDVOYAGE_DB_PATH`) and `X-API-Key` authentication.
 
 ---
 
@@ -45,7 +48,7 @@ Open the interactive Swagger API documentation: `http://localhost:8000/docs`
 
 ## 🧪 Testing
 
-Run all 14 automated unit and integration tests verifying matching, pricing, aftercare, and API contracts:
+Run all 25 automated unit and integration tests verifying matching, pricing, NLP extraction, catalog ingestion, and SQLite persistence:
 ```bash
 python -m pytest
 ```
@@ -53,12 +56,16 @@ python -m pytest
 Output:
 ```text
 tests/test_api.py .....
+tests/test_auth_and_security.py .
 tests/test_booking_and_aftercare.py .
 tests/test_catalog.py ..
+tests/test_catalog_ingestion.py ....
 tests/test_matcher.py ..
+tests/test_medical_record_extractor.py .....
 tests/test_models.py ..
 tests/test_quote_engine.py ..
-============================= 14 passed in 0.31s =============================
+tests/test_sqlite_persistence.py .
+============================= 25 passed in 0.56s =============================
 ```
 
 ---
