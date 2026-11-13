@@ -3,37 +3,37 @@
 {% block title %}Transparent Quote Comparison Tool | MedVoyage{% endblock %}
 
 {% block content %}
-<div class="bg-gradient-to-b from-emerald-50/50 to-slate-50 py-10 border-b border-slate-200">
+<div class="bg-gradient-to-b from-emerald-50/50 to-slate-50 py-8 sm:py-10 border-b border-slate-200">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div class="flex flex-col md:flex-row justify-between md:items-center gap-4">
             <div>
                 <span class="text-xs font-bold uppercase tracking-wider text-brand-600 bg-emerald-50 px-3 py-1 rounded-full">
                     EthAum Core Differentiator &bull; Anti-Surprise Billing
                 </span>
-                <h1 class="text-3xl font-black text-slate-900 mt-2">Itemized Procedure Quote Comparison</h1>
+                <h1 class="text-2xl sm:text-3xl font-black text-slate-900 mt-2">Itemized Procedure Quote Comparison</h1>
                 <p class="text-slate-600 text-xs sm:text-sm mt-1">
                     Side-by-side breakdown of surgeon fees, operating suites, implants, and explicitly disclosed out-of-pocket expenses.
                 </p>
             </div>
             <!-- Treatment Selector Dropdown -->
-            <form action="/compare" method="GET" class="flex items-center space-x-2">
+            <form action="/compare" method="GET" class="flex flex-col xs:flex-row items-stretch xs:items-center gap-2">
                 <select name="treatment" onchange="this.form.submit()" class="bg-white border border-slate-200 rounded-xl px-3.5 py-2.5 text-xs font-bold text-slate-800 shadow-xs focus:ring-2 focus:ring-brand-500 focus:outline-none">
                     {% for t in all_treatments %}
                     <option value="{{ t.id }}" {% if selected_treatment == t.id %}selected{% endif %}>{{ t.name }}</option>
                     {% endfor %}
                 </select>
-                <button type="button" onclick="window.print()" class="bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-bold px-3 py-2.5 rounded-xl border border-slate-200 flex items-center space-x-1" title="Save / Print PDF">
+                <button type="button" onclick="window.print()" class="bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-bold px-3.5 py-2.5 rounded-xl border border-slate-200 flex items-center justify-center space-x-1" title="Save / Print PDF">
                     <i class="fa-solid fa-print"></i>
-                    <span class="hidden sm:inline">Save PDF</span>
+                    <span>Print PDF</span>
                 </button>
             </form>
         </div>
     </div>
 </div>
 
-<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-12">
     <!-- US Benchmark Reference Banner -->
-    <div class="bg-white p-5 rounded-3xl border border-slate-200 shadow-xs mb-8 flex justify-between items-center flex-wrap gap-4 text-xs">
+    <div class="bg-white p-4 sm:p-5 rounded-3xl border border-slate-200 shadow-xs mb-6 sm:mb-8 flex justify-between items-center flex-wrap gap-3 text-xs">
         <div>
             <span class="text-slate-400 font-bold uppercase tracking-wider block text-[10px]">Reference Baseline</span>
             <span class="font-bold text-slate-900 text-sm">US Private Surgical Benchmark: ${{ "{:,.0f}".format(benchmark_cost) }} USD</span>
@@ -45,13 +45,13 @@
     </div>
 
     <!-- Side-by-Side Comparison Cards Grid -->
-    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">
         {% for q in quotes %}
-        <div class="bg-white rounded-3xl p-6 border border-slate-200 shadow-sm hover:border-brand-500 transition flex flex-col justify-between">
+        <div class="bg-white rounded-3xl p-5 sm:p-6 border border-slate-200 shadow-sm hover:border-brand-500 transition flex flex-col justify-between">
             <div>
-                <div class="flex justify-between items-start">
+                <div class="flex justify-between items-start gap-2">
                     <span class="text-xs font-bold uppercase tracking-wider text-brand-600 bg-emerald-50 px-2.5 py-1 rounded-full">{{ q.country }}</span>
-                    <span class="text-xs text-slate-500 font-medium"><i class="fa-regular fa-clock mr-1 text-slate-400"></i> Wait: {{ q.estimated_waiting_days }}d</span>
+                    <span class="text-xs text-slate-500 font-medium shrink-0"><i class="fa-regular fa-clock mr-1 text-slate-400"></i> Wait: {{ q.estimated_waiting_days }}d</span>
                 </div>
                 
                 <h3 class="text-base font-bold text-slate-900 mt-3">{{ q.provider_name }}</h3>
@@ -60,7 +60,7 @@
                 <!-- Total Cost & Savings -->
                 <div class="mt-4 pb-4 border-b border-slate-100">
                     <span class="text-[11px] text-slate-400 block">Total Guaranteed Package</span>
-                    <div class="text-3xl font-black text-slate-900">${{ "{:,.0f}".format(q.total_package_usd) }} <span class="text-xs text-slate-400 font-normal">USD</span></div>
+                    <div class="text-2xl sm:text-3xl font-black text-slate-900">${{ "{:,.0f}".format(q.total_package_usd) }} <span class="text-xs text-slate-400 font-normal">USD</span></div>
                     <div class="text-[11px] text-emerald-600 font-bold mt-1">
                         Saves ~{{ ((benchmark_cost - q.total_package_usd)/benchmark_cost * 100) | round | int }}% vs US ($38,000)
                     </div>
@@ -89,7 +89,7 @@
                     <ul class="text-[11px] text-slate-600 mt-1.5 space-y-1">
                         {% for inc in q.included_services[:3] %}
                         <li class="flex items-start space-x-1.5">
-                            <i class="fa-solid fa-check text-brand-600 text-[10px] mt-0.5"></i>
+                            <i class="fa-solid fa-check text-brand-600 text-[10px] mt-0.5 shrink-0"></i>
                             <span>{{ inc }}</span>
                         </li>
                         {% endfor %}

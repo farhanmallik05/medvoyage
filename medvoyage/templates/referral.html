@@ -3,22 +3,22 @@
 {% block title %}Healthcare Partner Referral Program | MedVoyage{% endblock %}
 
 {% block content %}
-<div class="bg-gradient-to-b from-emerald-50/50 to-slate-50 py-10 border-b border-slate-200">
+<div class="bg-gradient-to-b from-emerald-50/50 to-slate-50 py-8 sm:py-10 border-b border-slate-200">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <span class="text-xs font-bold uppercase tracking-wider text-brand-600 bg-emerald-50 px-3 py-1 rounded-full">
             EthAum PRD Section 4 &bull; Step 14
         </span>
-        <h1 class="text-3xl sm:text-4xl font-black text-slate-900 mt-2">Healthcare Partner Referral Network</h1>
+        <h1 class="text-2xl sm:text-3xl md:text-4xl font-black text-slate-900 mt-2">Healthcare Partner Referral Network</h1>
         <p class="text-slate-600 text-xs sm:text-sm mt-1 max-w-3xl">
             Clinics, referring physicians, and healthcare partners earn a transparent 5% referral commission on the final billed treatment amount upon successful patient procedure completion.
         </p>
     </div>
 </div>
 
-<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-12">
     <!-- Value Prop Cards -->
-    <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-12">
-        <div class="bg-white rounded-3xl p-6 border border-slate-200 shadow-sm">
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-4 sm:gap-6 mb-8 sm:mb-12">
+        <div class="bg-white rounded-3xl p-5 sm:p-6 border border-slate-200 shadow-sm">
             <span class="w-10 h-10 rounded-2xl bg-emerald-100 text-brand-700 flex items-center justify-center text-lg mb-4">
                 <i class="fa-solid fa-percent"></i>
             </span>
@@ -27,7 +27,7 @@
                 Eligible referring clinicians and clinics receive 5% payouts directly transferred within 30 days of completed treatment.
             </p>
         </div>
-        <div class="bg-white rounded-3xl p-6 border border-slate-200 shadow-sm">
+        <div class="bg-white rounded-3xl p-5 sm:p-6 border border-slate-200 shadow-sm">
             <span class="w-10 h-10 rounded-2xl bg-blue-100 text-blue-700 flex items-center justify-center text-lg mb-4">
                 <i class="fa-solid fa-hospital-user"></i>
             </span>
@@ -36,7 +36,7 @@
                 Referring doctors receive digital discharge summaries, surgical operation notes, and 90-day telehealth updates for seamless home care.
             </p>
         </div>
-        <div class="bg-white rounded-3xl p-6 border border-slate-200 shadow-sm">
+        <div class="bg-white rounded-3xl p-5 sm:p-6 border border-slate-200 shadow-sm">
             <span class="w-10 h-10 rounded-2xl bg-purple-100 text-purple-700 flex items-center justify-center text-lg mb-4">
                 <i class="fa-solid fa-chart-pie"></i>
             </span>
@@ -48,15 +48,16 @@
     </div>
 
     <!-- Active Referral Ledger (PRD §4 Step 14) -->
-    <div class="bg-white rounded-3xl p-6 sm:p-8 border border-slate-200 shadow-sm">
-        <div class="flex justify-between items-center mb-6">
+    <div class="bg-white rounded-3xl p-5 sm:p-8 border border-slate-200 shadow-sm">
+        <div class="flex flex-col xs:flex-row justify-between xs:items-center gap-2 mb-6">
             <h3 class="text-base font-bold text-slate-900">Tracked Partner Referrals & Payouts</h3>
-            <span class="text-xs font-bold text-brand-700 bg-emerald-50 px-3 py-1 rounded-full border border-emerald-200">
+            <span class="text-xs font-bold text-brand-700 bg-emerald-50 px-3 py-1 rounded-full border border-emerald-200 w-fit">
                 5% Program Active
             </span>
         </div>
 
-        <div class="overflow-x-auto">
+        <!-- Desktop Table View -->
+        <div class="hidden md:block overflow-x-auto">
             <table class="w-full text-left border-collapse text-xs">
                 <thead>
                     <tr class="border-b border-slate-200 text-slate-400 font-bold uppercase tracking-wider text-[10px]">
@@ -96,6 +97,39 @@
                     {% endfor %}
                 </tbody>
             </table>
+        </div>
+
+        <!-- Mobile Card View -->
+        <div class="block md:hidden space-y-3">
+            {% for r in referrals %}
+            <div class="p-4 bg-slate-50 rounded-2xl border border-slate-200 text-xs space-y-2.5">
+                <div class="flex justify-between items-start gap-2">
+                    <div>
+                        <span class="font-mono font-bold text-slate-900 block">{{ r.id }}</span>
+                        <span class="font-bold text-brand-700 text-sm block mt-0.5">{{ r.referrer_name }}</span>
+                        <span class="text-[11px] text-slate-500">{{ r.referrer_type }}</span>
+                    </div>
+                    <span class="px-2.5 py-1 rounded-full text-[10px] font-bold shrink-0 {{ 'bg-emerald-100 text-brand-800' if r.status == 'PAID' else 'bg-blue-100 text-blue-800' }}">
+                        {{ r.status }}
+                    </span>
+                </div>
+
+                <div class="grid grid-cols-2 gap-2 pt-2 border-t border-slate-200 text-[11px]">
+                    <div>
+                        <span class="text-slate-400 block">Patient:</span>
+                        <span class="font-semibold text-slate-800">{{ r.patient_name }}</span>
+                    </div>
+                    <div>
+                        <span class="text-slate-400 block">Billed Total:</span>
+                        <span class="font-bold text-slate-900">${{ "{:,.2f}".format(r.billed_amount_usd) }}</span>
+                    </div>
+                    <div class="col-span-2 pt-1 border-t border-slate-100 flex justify-between items-center">
+                        <span class="text-slate-500 font-medium">5% Payout Earned:</span>
+                        <span class="font-black text-brand-700 text-sm">${{ "{:,.2f}".format(r.commission_earned_usd) }} USD</span>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
         </div>
     </div>
 </div>

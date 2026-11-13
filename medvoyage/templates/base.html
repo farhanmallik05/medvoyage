@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
     <title>{% block title %}MedVoyage | Trusted International Healthcare Marketplace{% endblock %}</title>
     <!-- Tailwind CSS CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
@@ -19,6 +19,9 @@
                             700: '#047857',
                             900: '#064e3b',
                         }
+                    },
+                    screens: {
+                        'xs': '480px',
                     }
                 }
             }
@@ -28,40 +31,53 @@
     <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.14.3/dist/cdn.min.js"></script>
     <!-- Font Awesome Icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <style>
+        /* Smooth scrolling and tap highlight adjustments */
+        html { scroll-behavior: smooth; -webkit-tap-highlight-color: transparent; }
+        /* Safe area inset for notched devices */
+        body { padding-bottom: env(safe-area-inset-bottom); }
+    </style>
 </head>
-<body class="bg-slate-50 text-slate-900 font-sans min-h-screen flex flex-col" x-data="{ notifOpen: false, navMobile: false }">
+<body class="bg-slate-50 text-slate-900 font-sans min-h-screen flex flex-col antialiased selection:bg-brand-500 selection:text-white" x-data="{ navMobile: false }">
 
     <!-- Top Emergency & Clinical Care Disclaimer Bar -->
-    <div class="bg-amber-500 text-slate-950 text-xs px-4 py-1.5 font-medium flex justify-between items-center shadow-inner">
-        <div class="max-w-7xl mx-auto w-full flex items-center justify-between">
-            <span><i class="fa-solid fa-triangle-exclamation mr-1.5 text-slate-950"></i> <strong>Medical Notice:</strong> MedVoyage is a healthcare coordination platform. Clinical treatment is delivered solely by licensed hospital physicians. Emergency? Call local emergency services immediately.</span>
-            <div class="hidden md:flex items-center space-x-4 text-xs font-semibold">
-                <span><i class="fa-solid fa-phone mr-1"></i> 24/7 International Concierge: +1 (800) 555-VOYAGE</span>
-                <span class="text-slate-800">|</span>
-                <span class="bg-amber-400 px-2 py-0.5 rounded text-[11px] font-mono tracking-wider">USD ($) &bull; English</span>
+    <div class="bg-amber-500 text-slate-950 text-[11px] sm:text-xs px-3 sm:px-4 py-1.5 font-medium shadow-inner">
+        <div class="max-w-7xl mx-auto w-full flex flex-col md:flex-row items-center justify-between gap-1 text-center md:text-left">
+            <span><i class="fa-solid fa-triangle-exclamation mr-1 text-slate-950"></i> <strong>Medical Notice:</strong> MedVoyage is a healthcare coordination platform. Care is delivered by licensed hospital physicians.</span>
+            <div class="flex items-center justify-center space-x-3 text-[11px] font-semibold">
+                <span class="hidden sm:inline"><i class="fa-solid fa-phone mr-1"></i> +1 (800) 555-VOYAGE</span>
+                <span class="hidden sm:inline text-slate-800">|</span>
+                <span class="bg-amber-400 px-2 py-0.5 rounded text-[10px] font-mono tracking-wider">USD ($) &bull; English</span>
             </div>
         </div>
     </div>
 
     <!-- Navigation Bar -->
-    <nav class="bg-white border-b border-slate-200 sticky top-0 z-50 shadow-xs">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <nav class="bg-white border-b border-slate-200 sticky top-0 z-50 shadow-xs backdrop-blur-md bg-white/95">
+        <div class="max-w-7xl mx-auto px-3 sm:px-6 lg:px-8">
             <div class="flex justify-between h-16 items-center">
-                <!-- Brand Logo -->
-                <div class="flex items-center space-x-3">
+                
+                <!-- Left: Hamburger Menu (Mobile) & Brand Logo -->
+                <div class="flex items-center space-x-2 sm:space-x-3">
+                    <!-- Mobile Hamburger Button -->
+                    <button @click="navMobile = !navMobile" type="button" class="md:hidden p-2 rounded-xl text-slate-600 hover:text-slate-900 hover:bg-slate-100 transition focus:outline-none" aria-label="Toggle navigation menu">
+                        <i class="fa-solid text-lg" :class="navMobile ? 'fa-xmark' : 'fa-bars'"></i>
+                    </button>
+
+                    <!-- Brand Logo -->
                     <a href="/" class="flex items-center space-x-2">
-                        <span class="w-9 h-9 rounded-xl bg-gradient-to-tr from-brand-600 to-emerald-400 flex items-center justify-center text-white shadow-md shadow-brand-500/20">
-                            <i class="fa-solid fa-shield-heart text-lg"></i>
+                        <span class="w-8 h-8 sm:w-9 sm:h-9 rounded-xl bg-gradient-to-tr from-brand-600 to-emerald-400 flex items-center justify-center text-white shadow-md shadow-brand-500/20 shrink-0">
+                            <i class="fa-solid fa-shield-heart text-base sm:text-lg"></i>
                         </span>
-                        <div>
-                            <span class="text-2xl font-black tracking-tight text-slate-900">MedVoyage</span>
-                            <span class="hidden sm:inline-block text-[10px] uppercase font-bold tracking-wider px-2 py-0.5 ml-1.5 bg-emerald-50 text-brand-700 rounded-full border border-brand-200">EthAum MVP</span>
+                        <div class="flex items-center">
+                            <span class="text-xl sm:text-2xl font-black tracking-tight text-slate-900">MedVoyage</span>
+                            <span class="hidden xs:inline-block text-[9px] sm:text-[10px] uppercase font-bold tracking-wider px-1.5 sm:px-2 py-0.5 ml-1.5 bg-emerald-50 text-brand-700 rounded-full border border-brand-200">EthAum</span>
                         </div>
                     </a>
                 </div>
 
                 <!-- Desktop Nav Links -->
-                <div class="hidden md:flex items-center space-x-7 text-sm font-semibold text-slate-600">
+                <div class="hidden md:flex items-center space-x-5 lg:space-x-7 text-xs lg:text-sm font-semibold text-slate-600">
                     <a href="/treatments" class="hover:text-brand-600 transition flex items-center space-x-1">
                         <span>Treatments</span>
                     </a>
@@ -69,7 +85,7 @@
                         <span>Destinations</span>
                     </a>
                     <a href="/providers" class="hover:text-brand-600 transition flex items-center space-x-1">
-                        <span>Specialists & Hospitals</span>
+                        <span>Specialists</span>
                     </a>
                     <a href="/compare?treatment=knee-replacement" class="hover:text-brand-600 transition flex items-center space-x-1">
                         <span>Compare Quotes</span>
@@ -80,56 +96,101 @@
                 </div>
 
                 <!-- Right Action Buttons -->
-                <div class="flex items-center space-x-3">
+                <div class="flex items-center space-x-1.5 sm:space-x-3">
                     <!-- Notifications Dropdown -->
                     <div class="relative" x-data="{ open: false }">
-                        <button @click="open = !open" class="relative p-2 text-slate-500 hover:text-slate-800 rounded-xl hover:bg-slate-100 transition focus:outline-none">
-                            <i class="fa-regular fa-bell text-lg"></i>
-                            <span class="absolute top-1.5 right-1.5 w-2.5 h-2.5 bg-emerald-500 rounded-full ring-2 ring-white"></span>
+                        <button @click="open = !open" class="relative p-2 text-slate-500 hover:text-slate-800 rounded-xl hover:bg-slate-100 transition focus:outline-none" aria-label="Notifications">
+                            <i class="fa-regular fa-bell text-base sm:text-lg"></i>
+                            <span class="absolute top-1.5 right-1.5 w-2 sm:w-2.5 h-2 sm:h-2.5 bg-emerald-500 rounded-full ring-2 ring-white"></span>
                         </button>
-                        <div x-show="open" @click.away="open = false" x-transition class="absolute right-0 mt-2 w-80 bg-white rounded-2xl shadow-xl border border-slate-200 py-3 z-50">
+                        <div x-show="open" @click.away="open = false" x-transition class="absolute right-0 mt-2 w-72 sm:w-80 max-w-[calc(100vw-2rem)] bg-white rounded-2xl shadow-xl border border-slate-200 py-3 z-50">
                             <div class="px-4 pb-2 border-b border-slate-100 flex justify-between items-center">
-                                <h4 class="text-xs font-bold uppercase tracking-wider text-slate-500">Live Coordination Alerts</h4>
+                                <h4 class="text-xs font-bold uppercase tracking-wider text-slate-500">Coordination Alerts</h4>
                                 <span class="text-[11px] font-semibold text-brand-600">3 Unread</span>
                             </div>
-                            <div class="divide-y divide-slate-100 text-xs">
+                            <div class="divide-y divide-slate-100 text-xs max-h-72 overflow-y-auto">
                                 <a href="/portal/appointments" class="block px-4 py-2.5 hover:bg-slate-50 transition">
                                     <div class="font-semibold text-slate-900 flex items-center justify-between">
-                                        <span>Telehealth Video Confirmed</span>
-                                        <span class="text-[10px] text-slate-400">2d away</span>
+                                        <span class="truncate">Telehealth Video Confirmed</span>
+                                        <span class="text-[10px] text-slate-400 shrink-0 ml-1">2d away</span>
                                     </div>
-                                    <p class="text-slate-500 mt-0.5">Dr. Ramesh Sundaram scheduled your pre-op review.</p>
+                                    <p class="text-slate-500 mt-0.5 text-[11px]">Dr. Ramesh Sundaram scheduled your pre-op review.</p>
                                 </a>
                                 <a href="/portal/leads" class="block px-4 py-2.5 hover:bg-slate-50 transition">
                                     <div class="font-semibold text-slate-900 flex items-center justify-between">
-                                        <span>New Discharge Summary Parsed</span>
-                                        <span class="text-[10px] text-slate-400">1h ago</span>
+                                        <span class="truncate">Discharge Summary Parsed</span>
+                                        <span class="text-[10px] text-slate-400 shrink-0 ml-1">1h ago</span>
                                     </div>
-                                    <p class="text-slate-500 mt-0.5">AI NLP extracted clinical parameters for inquiry #inq-sample-knee.</p>
+                                    <p class="text-slate-500 mt-0.5 text-[11px]">AI NLP extracted clinical parameters for inquiry #inq-sample-knee.</p>
                                 </a>
                                 <a href="/referral" class="block px-4 py-2.5 hover:bg-slate-50 transition">
                                     <div class="font-semibold text-slate-900 flex items-center justify-between">
-                                        <span>5% Commission Credited</span>
-                                        <span class="text-[10px] text-slate-400">Today</span>
+                                        <span class="truncate">5% Commission Credited</span>
+                                        <span class="text-[10px] text-slate-400 shrink-0 ml-1">Today</span>
                                     </div>
-                                    <p class="text-slate-500 mt-0.5">$1,320 referral payout approved for Dr. Andrew Collins.</p>
+                                    <p class="text-slate-500 mt-0.5 text-[11px]">$1,320 referral payout approved for Dr. Andrew Collins.</p>
                                 </a>
                             </div>
                         </div>
                     </div>
 
-                    <!-- Hospital Provider Portal Link -->
-                    <a href="/portal/leads" class="hidden lg:inline-flex items-center space-x-1.5 text-xs font-bold text-slate-700 bg-slate-100 hover:bg-slate-200 px-3.5 py-2 rounded-xl transition">
+                    <!-- Hospital Provider Portal Link (Desktop) -->
+                    <a href="/portal/leads" class="hidden lg:inline-flex items-center space-x-1.5 text-xs font-bold text-slate-700 bg-slate-100 hover:bg-slate-200 px-3 py-2 rounded-xl transition">
                         <i class="fa-solid fa-hospital-user text-brand-600"></i>
                         <span>Hospital Portal</span>
                     </a>
 
                     <!-- Start Free Quote / Case Request CTA -->
-                    <a href="/inquiry/new" class="inline-flex items-center space-x-2 text-xs sm:text-sm font-bold text-white bg-gradient-to-r from-brand-600 to-emerald-600 hover:from-brand-700 hover:to-emerald-700 px-4 py-2 sm:px-5 sm:py-2.5 rounded-xl shadow-md shadow-brand-600/20 transition transform hover:-translate-y-0.5">
-                        <i class="fa-solid fa-file-medical"></i>
-                        <span>Start Case / Free Quote</span>
+                    <a href="/inquiry/new" class="inline-flex items-center space-x-1.5 text-xs sm:text-sm font-bold text-white bg-gradient-to-r from-brand-600 to-emerald-600 hover:from-brand-700 hover:to-emerald-700 px-3 py-1.5 sm:px-4 sm:py-2 rounded-xl shadow-md shadow-brand-600/20 transition transform hover:-translate-y-0.5">
+                        <i class="fa-solid fa-file-medical text-xs"></i>
+                        <span><span class="hidden sm:inline">Start Case / </span>Free Quote</span>
                     </a>
                 </div>
+            </div>
+        </div>
+
+        <!-- Mobile Navigation Drawer / Dropdown -->
+        <div x-show="navMobile" x-transition class="md:hidden border-t border-slate-200 bg-white px-4 pt-3 pb-6 space-y-3 shadow-lg">
+            <div class="grid grid-cols-2 gap-2 text-xs font-bold text-slate-700">
+                <a href="/treatments" @click="navMobile = false" class="p-2.5 rounded-xl bg-slate-50 hover:bg-emerald-50 hover:text-brand-700 transition flex items-center space-x-2">
+                    <i class="fa-solid fa-stethoscope text-brand-600 w-4 text-center"></i>
+                    <span>Treatments</span>
+                </a>
+                <a href="/destinations" @click="navMobile = false" class="p-2.5 rounded-xl bg-slate-50 hover:bg-emerald-50 hover:text-brand-700 transition flex items-center space-x-2">
+                    <i class="fa-solid fa-earth-americas text-brand-600 w-4 text-center"></i>
+                    <span>Destinations</span>
+                </a>
+                <a href="/providers" @click="navMobile = false" class="p-2.5 rounded-xl bg-slate-50 hover:bg-emerald-50 hover:text-brand-700 transition flex items-center space-x-2">
+                    <i class="fa-solid fa-user-doctor text-brand-600 w-4 text-center"></i>
+                    <span>Specialists</span>
+                </a>
+                <a href="/compare?treatment=knee-replacement" @click="navMobile = false" class="p-2.5 rounded-xl bg-slate-50 hover:bg-emerald-50 hover:text-brand-700 transition flex items-center space-x-2">
+                    <i class="fa-solid fa-scale-balanced text-brand-600 w-4 text-center"></i>
+                    <span>Compare</span>
+                </a>
+                <a href="/records/upload" @click="navMobile = false" class="p-2.5 rounded-xl bg-slate-50 hover:bg-emerald-50 hover:text-brand-700 transition flex items-center space-x-2">
+                    <i class="fa-solid fa-wand-magic-sparkles text-brand-600 w-4 text-center"></i>
+                    <span>AI Record Parser</span>
+                </a>
+                <a href="/referral" @click="navMobile = false" class="p-2.5 rounded-xl bg-slate-50 hover:bg-emerald-50 hover:text-brand-700 transition flex items-center space-x-2">
+                    <i class="fa-solid fa-handshake text-brand-600 w-4 text-center"></i>
+                    <span>5% Referral</span>
+                </a>
+            </div>
+
+            <!-- Mobile Portal Links -->
+            <div class="pt-2 border-t border-slate-100 flex flex-col gap-2">
+                <a href="/portal/leads" @click="navMobile = false" class="w-full text-center p-2.5 rounded-xl bg-slate-900 text-white text-xs font-bold flex items-center justify-center space-x-2 shadow-xs">
+                    <i class="fa-solid fa-hospital-user text-emerald-400"></i>
+                    <span>Hospital CRM & Lead Portal &rarr;</span>
+                </a>
+                <a href="/help" @click="navMobile = false" class="w-full text-center p-2 rounded-xl bg-slate-100 text-slate-700 text-xs font-semibold hover:bg-slate-200 transition">
+                    Help Centre, Safety & FAQs
+                </a>
+            </div>
+
+            <div class="text-center pt-1 text-[11px] text-slate-400">
+                <span>24/7 International Concierge: +1 (800) 555-VOYAGE</span>
             </div>
         </div>
     </nav>
@@ -141,10 +202,10 @@
 
     <!-- Global Footer -->
     <footer class="bg-slate-900 text-slate-400 text-sm mt-16 border-t border-slate-800">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-            <div class="grid grid-cols-1 md:grid-cols-4 gap-8">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 sm:py-12">
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
                 <!-- Col 1: About & Trust -->
-                <div class="space-y-4">
+                <div class="space-y-4 sm:col-span-2 lg:col-span-1">
                     <div class="flex items-center space-x-2">
                         <span class="w-8 h-8 rounded-lg bg-emerald-500 flex items-center justify-center text-slate-950 font-bold">
                             <i class="fa-solid fa-shield-heart"></i>
@@ -154,9 +215,9 @@
                     <p class="text-xs text-slate-400 leading-relaxed">
                         EthAum Venture Partners AI Healthcare Marketplace. Empowering cross-border patients with 100% itemized price transparency, JCI-accredited surgeons, and 90-day continuous aftercare.
                     </p>
-                    <div class="flex space-x-3 text-slate-400 text-sm">
-                        <span class="bg-slate-800 px-2.5 py-1 rounded text-xs border border-slate-700"><i class="fa-solid fa-check-circle text-emerald-400 mr-1"></i> JCI Standard Only</span>
-                        <span class="bg-slate-800 px-2.5 py-1 rounded text-xs border border-slate-700"><i class="fa-solid fa-lock text-emerald-400 mr-1"></i> Zero-Knowledge Vault</span>
+                    <div class="flex flex-wrap gap-2 text-slate-400 text-xs">
+                        <span class="bg-slate-800 px-2.5 py-1 rounded border border-slate-700"><i class="fa-solid fa-check-circle text-emerald-400 mr-1"></i> JCI Standard Only</span>
+                        <span class="bg-slate-800 px-2.5 py-1 rounded border border-slate-700"><i class="fa-solid fa-lock text-emerald-400 mr-1"></i> Zero-Knowledge Vault</span>
                     </div>
                 </div>
 
@@ -167,8 +228,8 @@
                         <li><a href="/treatments/knee-replacement" class="hover:text-emerald-400 transition">Total Knee Replacement (Robotic)</a></li>
                         <li><a href="/treatments/cabg-cardiac" class="hover:text-emerald-400 transition">Coronary Artery Bypass (CABG)</a></li>
                         <li><a href="/treatments/dental-all-on-4" class="hover:text-emerald-400 transition">All-on-4 Full Arch Dental Implants</a></li>
-                        <li><a href="/treatments/hip-replacement" class="hover:text-emerald-400 transition">Anterior Muscle-Sparing Hip Replacement</a></li>
-                        <li><a href="/treatments/robotic-prostatectomy" class="hover:text-emerald-400 transition">Da Vinci Robotic Radical Prostatectomy</a></li>
+                        <li><a href="/treatments/hip-replacement" class="hover:text-emerald-400 transition">Anterior Hip Replacement</a></li>
+                        <li><a href="/treatments/robotic-prostatectomy" class="hover:text-emerald-400 transition">Da Vinci Robotic Prostatectomy</a></li>
                     </ul>
                 </div>
 
@@ -180,7 +241,7 @@
                         <li><a href="/destinations/india-chennai" class="hover:text-emerald-400 transition">Chennai, India &bull; Apollo Hospitals</a></li>
                         <li><a href="/destinations/thailand-bangkok" class="hover:text-emerald-400 transition">Bangkok, Thailand &bull; Bumrungrad</a></li>
                         <li><a href="/destinations/turkey-istanbul" class="hover:text-emerald-400 transition">Istanbul, Turkey &bull; Acibadem Maslak</a></li>
-                        <li><a href="/destinations/singapore-sg" class="hover:text-emerald-400 transition">Singapore &bull; Robotic Oncology Centers</a></li>
+                        <li><a href="/destinations/singapore-sg" class="hover:text-emerald-400 transition">Singapore &bull; Robotic Centers</a></li>
                     </ul>
                 </div>
 
@@ -191,21 +252,21 @@
                         <li><a href="/records/upload" class="hover:text-emerald-400 transition"><i class="fa-solid fa-file-medical-alt text-emerald-400 mr-1.5"></i> AI Record Analyzer</a></li>
                         <li><a href="/portal/leads" class="hover:text-emerald-400 transition"><i class="fa-solid fa-hospital text-emerald-400 mr-1.5"></i> Hospital Lead Inbox</a></li>
                         <li><a href="/portal/analytics" class="hover:text-emerald-400 transition"><i class="fa-solid fa-chart-line text-emerald-400 mr-1.5"></i> CRM Analytics Dashboard</a></li>
-                        <li><a href="/referral" class="hover:text-emerald-400 transition"><i class="fa-solid fa-handshake text-emerald-400 mr-1.5"></i> 5% Partner Referral Network</a></li>
+                        <li><a href="/referral" class="hover:text-emerald-400 transition"><i class="fa-solid fa-handshake text-emerald-400 mr-1.5"></i> 5% Referral Network</a></li>
                         <li><a href="/docs" class="hover:text-emerald-400 transition"><i class="fa-solid fa-code text-emerald-400 mr-1.5"></i> FastAPI REST Swagger Docs</a></li>
                     </ul>
                 </div>
             </div>
 
             <!-- Bottom Line -->
-            <div class="mt-8 pt-8 border-t border-slate-800 text-xs text-slate-500 flex flex-col sm:flex-row justify-between items-center space-y-3 sm:space-y-0">
+            <div class="mt-8 pt-8 border-t border-slate-800 text-xs text-slate-500 flex flex-col sm:flex-row justify-between items-center space-y-3 sm:space-y-0 text-center sm:text-left">
                 <div>
-                    &copy; 2026 MedVoyage Healthcare Platform. Developed for EthAum Venture Partners Medical Tourism Challenge.
+                    &copy; 2026 MedVoyage Healthcare Platform. Developed for EthAum Venture Partners.
                 </div>
-                <div class="flex space-x-6">
+                <div class="flex flex-wrap justify-center gap-4 text-xs">
                     <a href="/help" class="hover:text-slate-300">Privacy & HIPAA Security</a>
                     <a href="/help" class="hover:text-slate-300">Anti-Surprise Billing Guarantee</a>
-                    <a href="/help" class="hover:text-slate-300">Terms of Care Coordination</a>
+                    <a href="/help" class="hover:text-slate-300">Terms of Coordination</a>
                 </div>
             </div>
         </div>

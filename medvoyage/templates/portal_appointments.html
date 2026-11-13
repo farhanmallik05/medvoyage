@@ -3,7 +3,7 @@
 {% block title %}Hospital Appointments & Consultations | MedVoyage{% endblock %}
 
 {% block content %}
-<div class="bg-gradient-to-b from-slate-900 to-slate-950 text-white py-10 border-b border-slate-800">
+<div class="bg-gradient-to-b from-slate-900 to-slate-950 text-white py-8 sm:py-10 border-b border-slate-800">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <a href="/portal/leads" class="text-xs font-bold text-emerald-400 hover:text-emerald-300 flex items-center space-x-1 mb-3">
             <i class="fa-solid fa-arrow-left text-[10px]"></i>
@@ -14,28 +14,29 @@
                 <span class="text-xs font-mono font-bold text-emerald-400 uppercase tracking-wider bg-emerald-950 px-3 py-1 rounded-full border border-emerald-800">
                     Hospital Calendar Management &bull; PRD §3
                 </span>
-                <h1 class="text-3xl font-black mt-2">Confirmed Telehealth Consultations</h1>
+                <h1 class="text-2xl sm:text-3xl font-black mt-2">Confirmed Telehealth Consultations</h1>
                 <p class="text-slate-400 text-xs sm:text-sm mt-1">
                     Manage upcoming video slots, doctor schedules, and pre-op clinical evaluations.
                 </p>
             </div>
-            <a href="/portal/analytics" class="bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700 font-bold text-xs px-4 py-2.5 rounded-xl transition">
+            <a href="/portal/analytics" class="w-full sm:w-auto text-center bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700 font-bold text-xs px-4 py-2.5 rounded-xl transition shrink-0">
                 View Conversion Funnel &rarr;
             </a>
         </div>
     </div>
 </div>
 
-<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-    <div class="bg-white rounded-3xl p-6 sm:p-8 border border-slate-200 shadow-sm">
-        <div class="flex justify-between items-center mb-6">
+<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-12">
+    <div class="bg-white rounded-3xl p-5 sm:p-8 border border-slate-200 shadow-sm">
+        <div class="flex flex-col xs:flex-row justify-between xs:items-center gap-2 mb-6">
             <h3 class="text-base font-bold text-slate-900">Active Bookings ({{ bookings | length }})</h3>
-            <span class="text-xs font-bold text-emerald-700 bg-emerald-50 px-3 py-1 rounded-full border border-emerald-200">
+            <span class="text-xs font-bold text-emerald-700 bg-emerald-50 px-3 py-1 rounded-full border border-emerald-200 w-fit">
                 Encrypted WebRTC Connected
             </span>
         </div>
 
-        <div class="overflow-x-auto">
+        <!-- Desktop Table View -->
+        <div class="hidden md:block overflow-x-auto">
             <table class="w-full text-left border-collapse text-xs">
                 <thead>
                     <tr class="border-b border-slate-200 text-slate-400 font-bold uppercase tracking-wider text-[10px]">
@@ -83,6 +84,44 @@
                     {% endfor %}
                 </tbody>
             </table>
+        </div>
+
+        <!-- Mobile Card View -->
+        <div class="block md:hidden space-y-4">
+            {% for b in bookings %}
+            <div class="p-4 bg-slate-50 rounded-2xl border border-slate-200 text-xs space-y-3">
+                <div class="flex justify-between items-start gap-2">
+                    <div>
+                        <span class="font-mono font-bold text-brand-700 text-sm block">{{ b.booking_id }}</span>
+                        <span class="font-mono text-[11px] text-slate-400">Case: {{ b.inquiry_id }}</span>
+                    </div>
+                    <span class="bg-emerald-100 text-brand-800 text-[10px] font-bold px-2.5 py-0.5 rounded-full">
+                        {{ b.status }}
+                    </span>
+                </div>
+
+                <div class="grid grid-cols-2 gap-2 pt-2 border-t border-slate-200 text-[11px]">
+                    <div>
+                        <span class="text-slate-400 block">Doctor:</span>
+                        <span class="font-bold text-slate-900">{{ b.provider_id }}</span>
+                    </div>
+                    <div>
+                        <span class="text-slate-400 block">Modality:</span>
+                        <span class="text-blue-700 font-semibold">{{ b.consultation_type }}</span>
+                    </div>
+                    <div class="col-span-2">
+                        <span class="text-slate-400 block">Date & Time:</span>
+                        <span class="font-medium text-slate-800">{{ b.scheduled_at.strftime('%Y-%m-%d %H:%M UTC') if b.scheduled_at else 'Upcoming' }}</span>
+                    </div>
+                </div>
+
+                <div class="pt-2 border-t border-slate-200">
+                    <a href="/aftercare/{{ b.booking_id }}" class="w-full block text-center bg-brand-600 hover:bg-brand-700 text-white font-bold py-2 rounded-xl shadow-xs transition">
+                        View 90-Day Aftercare Pathway &rarr;
+                    </a>
+                </div>
+            </div>
+            {% endfor %}
         </div>
     </div>
 </div>

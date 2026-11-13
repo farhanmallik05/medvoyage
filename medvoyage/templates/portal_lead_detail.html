@@ -3,7 +3,7 @@
 {% block title %}Case Review & Triage | Hospital Portal | MedVoyage{% endblock %}
 
 {% block content %}
-<div class="bg-gradient-to-b from-slate-900 to-slate-950 text-white py-10 border-b border-slate-800">
+<div class="bg-gradient-to-b from-slate-900 to-slate-950 text-white py-8 sm:py-10 border-b border-slate-800">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <a href="/portal/leads" class="text-xs font-bold text-emerald-400 hover:text-emerald-300 flex items-center space-x-1 mb-3">
             <i class="fa-solid fa-arrow-left text-[10px]"></i>
@@ -14,28 +14,28 @@
                 <span class="text-xs font-mono font-bold text-emerald-400 uppercase tracking-wider bg-emerald-950 px-3 py-1 rounded-full border border-emerald-800">
                     Patient Case #{{ inquiry.id }}
                 </span>
-                <h1 class="text-3xl font-black mt-2">{{ inquiry.patient_name }}</h1>
+                <h1 class="text-2xl sm:text-3xl font-black mt-2">{{ inquiry.patient_name }}</h1>
                 <p class="text-slate-400 text-xs sm:text-sm mt-1">
                     {{ inquiry.patient_country }} &bull; Budget Target: ${{ "{:,.0f}".format(inquiry.budget_usd) }} USD &bull; Urgency: {{ inquiry.urgency }}
                 </p>
             </div>
-            <a href="/portal/quote/new?inquiry_id={{ inquiry.id }}" class="bg-emerald-500 hover:bg-emerald-600 text-slate-950 font-extrabold text-xs sm:text-sm px-6 py-3 rounded-xl transition shadow-lg shadow-emerald-500/20">
+            <a href="/portal/quote/new?inquiry_id={{ inquiry.id }}" class="w-full sm:w-auto text-center bg-emerald-500 hover:bg-emerald-600 text-slate-950 font-extrabold text-xs sm:text-sm px-6 py-3 rounded-xl transition shadow-lg shadow-emerald-500/20 shrink-0">
                 Generate Itemized Quote &rarr;
             </a>
         </div>
     </div>
 </div>
 
-<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-    <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-12">
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 sm:gap-8">
         <div class="lg:col-span-2 space-y-6">
             <!-- 9-Stage CRM Pipeline Stepper (PRD §3 CRM) -->
-            <div class="bg-white rounded-3xl p-6 border border-slate-200 shadow-sm">
-                <h3 class="text-xs font-bold uppercase tracking-wider text-slate-400 mb-4">EthAum CRM Progression</h3>
-                <div class="flex flex-wrap gap-2 text-xs">
+            <div class="bg-white rounded-3xl p-5 sm:p-6 border border-slate-200 shadow-sm">
+                <h3 class="text-xs font-bold uppercase tracking-wider text-slate-400 mb-3 sm:mb-4">EthAum CRM Progression</h3>
+                <div class="flex flex-wrap gap-1.5 sm:gap-2 text-[11px] sm:text-xs">
                     {% set stages = ["NEW", "QUALIFIED", "MEDICAL_REVIEW", "QUOTE_SENT", "CONSULTATION", "BOOKED", "TREATMENT", "AFTERCARE", "CLOSED"] %}
                     {% for st in stages %}
-                    <span class="px-3 py-1.5 rounded-xl font-bold {{ 'bg-brand-600 text-white' if loop.index <= 3 else 'bg-slate-100 text-slate-500 border border-slate-200' }}">
+                    <span class="px-2.5 sm:px-3 py-1 sm:py-1.5 rounded-xl font-bold {{ 'bg-brand-600 text-white' if loop.index <= 3 else 'bg-slate-100 text-slate-500 border border-slate-200' }}">
                         {{ loop.index }}. {{ st }}
                     </span>
                     {% endfor %}
@@ -43,12 +43,12 @@
             </div>
 
             <!-- Medical Record Summary Card -->
-            <div class="bg-white rounded-3xl p-6 sm:p-8 border border-slate-200 shadow-sm space-y-4">
-                <h2 class="text-lg font-bold text-slate-900 flex items-center space-x-2">
+            <div class="bg-white rounded-3xl p-5 sm:p-8 border border-slate-200 shadow-sm space-y-4">
+                <h2 class="text-base sm:text-lg font-bold text-slate-900 flex items-center space-x-2">
                     <i class="fa-solid fa-file-medical text-brand-600"></i>
                     <span>Submitted Clinical Summary & History</span>
                 </h2>
-                <div class="p-4 bg-slate-50 rounded-2xl border border-slate-100 text-xs text-slate-800 leading-relaxed font-mono">
+                <div class="p-4 bg-slate-50 rounded-2xl border border-slate-100 text-xs text-slate-800 leading-relaxed font-mono break-words">
                     {{ inquiry.medical_records_summary }}
                 </div>
             </div>
@@ -56,7 +56,7 @@
 
         <!-- Sidebar Actions -->
         <div class="space-y-6">
-            <div class="bg-white rounded-3xl p-6 border border-slate-200 shadow-sm text-xs space-y-4">
+            <div class="bg-white rounded-3xl p-5 sm:p-6 border border-slate-200 shadow-sm text-xs space-y-3 sm:space-y-4">
                 <h3 class="text-xs font-bold uppercase tracking-wider text-slate-400">Case Coordinator Actions</h3>
                 <a href="/portal/quote/new?inquiry_id={{ inquiry.id }}" class="w-full block text-center bg-brand-600 hover:bg-brand-700 text-white font-bold text-xs py-3 rounded-xl shadow-xs transition">
                     Build Official Hospital Quote &rarr;
