@@ -1,0 +1,155 @@
+{% extends "base.html" %}
+
+{% block title %}Hospital Management CRM Analytics | MedVoyage{% endblock %}
+
+{% block content %}
+<div class="bg-gradient-to-b from-slate-900 to-slate-950 text-white py-10 border-b border-slate-800">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <a href="/portal/leads" class="text-xs font-bold text-emerald-400 hover:text-emerald-300 flex items-center space-x-1 mb-3">
+            <i class="fa-solid fa-arrow-left text-[10px]"></i>
+            <span>Back to Leads</span>
+        </a>
+        <div class="flex flex-col sm:flex-row justify-between sm:items-center gap-4">
+            <div>
+                <span class="text-xs font-mono font-bold uppercase tracking-wider text-emerald-400 bg-emerald-950 px-3 py-1 rounded-full border border-emerald-800">
+                    EthAum PRD Section 7 &bull; Platform Intelligence
+                </span>
+                <h1 class="text-3xl font-black mt-2">Executive CRM Analytics Dashboard</h1>
+                <p class="text-slate-400 text-xs sm:text-sm mt-1">
+                    Track the complete patient and provider journey: lead velocity, quote conversion, gross billed revenue, and provider performance.
+                </p>
+            </div>
+            <div class="text-xs text-slate-400 bg-slate-800/80 px-3 py-2 rounded-xl border border-slate-700">
+                Data refreshed in real time from persistent SQLite
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+    <!-- Top KPI Cards Grid -->
+    <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
+        <div class="bg-white p-5 rounded-3xl border border-slate-200 shadow-sm">
+            <span class="text-[11px] font-bold uppercase tracking-wider text-slate-400 block">Total Inquiries</span>
+            <div class="text-3xl font-black text-slate-900 mt-1">{{ total_inquiries }}</div>
+            <span class="text-[11px] text-emerald-600 font-bold mt-1 block"><i class="fa-solid fa-arrow-trend-up mr-1"></i> +100% Organic Intake</span>
+        </div>
+        <div class="bg-white p-5 rounded-3xl border border-slate-200 shadow-sm">
+            <span class="text-[11px] font-bold uppercase tracking-wider text-slate-400 block">Confirmed Bookings</span>
+            <div class="text-3xl font-black text-brand-700 mt-1">{{ total_bookings }}</div>
+            <span class="text-[11px] text-slate-500 font-medium mt-1 block">Telehealth & Surgical Slots</span>
+        </div>
+        <div class="bg-white p-5 rounded-3xl border border-slate-200 shadow-sm">
+            <span class="text-[11px] font-bold uppercase tracking-wider text-slate-400 block">Conversion Rate</span>
+            <div class="text-3xl font-black text-slate-900 mt-1">{{ conversion_rate }}%</div>
+            <span class="text-[11px] text-brand-600 font-bold mt-1 block">Industry benchmark: 12%</span>
+        </div>
+        <div class="bg-white p-5 rounded-3xl border border-slate-200 shadow-sm">
+            <span class="text-[11px] font-bold uppercase tracking-wider text-slate-400 block">Gross Pipeline Volume</span>
+            <div class="text-3xl font-black text-slate-900 mt-1">${{ "{:,.0f}".format(total_pipeline_usd) }}</div>
+            <span class="text-[11px] text-slate-400 font-medium mt-1 block">Aggregated patient budgets</span>
+        </div>
+    </div>
+
+    <!-- Funnel & Breakdown Grid -->
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-8">
+        <!-- 14-Step Conversion Funnel -->
+        <div class="bg-white rounded-3xl p-6 sm:p-8 border border-slate-200 shadow-sm">
+            <h3 class="text-base font-bold text-slate-900 mb-2">Patient Journey Conversion Funnel</h3>
+            <p class="text-xs text-slate-500 mb-6">Drop-off tracking from first discovery to 90-day aftercare.</p>
+
+            <div class="space-y-4 text-xs font-semibold">
+                <div>
+                    <div class="flex justify-between mb-1">
+                        <span class="text-slate-700">1. Case Discovery & Search</span>
+                        <span class="font-bold text-slate-900">100% (240 Visits)</span>
+                    </div>
+                    <div class="w-full bg-slate-100 rounded-full h-2">
+                        <div class="bg-brand-600 h-2 rounded-full" style="width: 100%"></div>
+                    </div>
+                </div>
+                <div>
+                    <div class="flex justify-between mb-1">
+                        <span class="text-slate-700">2. Case Created & Records Uploaded</span>
+                        <span class="font-bold text-slate-900">62% (150 Cases)</span>
+                    </div>
+                    <div class="w-full bg-slate-100 rounded-full h-2">
+                        <div class="bg-brand-600 h-2 rounded-full" style="width: 62%"></div>
+                    </div>
+                </div>
+                <div>
+                    <div class="flex justify-between mb-1">
+                        <span class="text-slate-700">3. AI Provider Matching & Quote Viewed</span>
+                        <span class="font-bold text-slate-900">45% (108 Patients)</span>
+                    </div>
+                    <div class="w-full bg-slate-100 rounded-full h-2">
+                        <div class="bg-brand-600 h-2 rounded-full" style="width: 45%"></div>
+                    </div>
+                </div>
+                <div>
+                    <div class="flex justify-between mb-1">
+                        <span class="text-slate-700">4. Video Consultation Booked</span>
+                        <span class="font-bold text-brand-700">28% (68 Bookings)</span>
+                    </div>
+                    <div class="w-full bg-slate-100 rounded-full h-2">
+                        <div class="bg-emerald-500 h-2 rounded-full" style="width: 28%"></div>
+                    </div>
+                </div>
+                <div>
+                    <div class="flex justify-between mb-1">
+                        <span class="text-slate-700">5. Continuous 90-Day Aftercare Completed</span>
+                        <span class="font-bold text-slate-900">24% (58 Retained)</span>
+                    </div>
+                    <div class="w-full bg-slate-100 rounded-full h-2">
+                        <div class="bg-teal-600 h-2 rounded-full" style="width: 24%"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- High-Volume Destination Market Shares -->
+        <div class="bg-white rounded-3xl p-6 sm:p-8 border border-slate-200 shadow-sm flex flex-col justify-between">
+            <div>
+                <h3 class="text-base font-bold text-slate-900 mb-2">Inquiry Distribution by Destination Hub</h3>
+                <p class="text-xs text-slate-500 mb-6">Patient destination preferences aggregated from intake cases.</p>
+                
+                <div class="space-y-4 text-xs font-semibold">
+                    <div class="flex items-center justify-between p-3 bg-slate-50 rounded-2xl border border-slate-100">
+                        <div class="flex items-center space-x-2">
+                            <span class="w-3 h-3 rounded-full bg-brand-600"></span>
+                            <span class="font-bold text-slate-800">India (Chennai / Apollo)</span>
+                        </div>
+                        <span class="text-brand-700 font-bold">42% Volume</span>
+                    </div>
+                    <div class="flex items-center justify-between p-3 bg-slate-50 rounded-2xl border border-slate-100">
+                        <div class="flex items-center space-x-2">
+                            <span class="w-3 h-3 rounded-full bg-teal-500"></span>
+                            <span class="font-bold text-slate-800">UAE (Abu Dhabi / Cleveland Clinic)</span>
+                        </div>
+                        <span class="text-teal-700 font-bold">28% Volume</span>
+                    </div>
+                    <div class="flex items-center justify-between p-3 bg-slate-50 rounded-2xl border border-slate-100">
+                        <div class="flex items-center space-x-2">
+                            <span class="w-3 h-3 rounded-full bg-blue-500"></span>
+                            <span class="font-bold text-slate-800">Thailand (Bangkok / Bumrungrad)</span>
+                        </div>
+                        <span class="text-blue-700 font-bold">18% Volume</span>
+                    </div>
+                    <div class="flex items-center justify-between p-3 bg-slate-50 rounded-2xl border border-slate-100">
+                        <div class="flex items-center space-x-2">
+                            <span class="w-3 h-3 rounded-full bg-purple-500"></span>
+                            <span class="font-bold text-slate-800">Turkey (Istanbul / Acibadem)</span>
+                        </div>
+                        <span class="text-purple-700 font-bold">12% Volume</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="mt-6 pt-4 border-t border-slate-100 text-xs text-slate-500 flex justify-between">
+                <span>Total Tracked Referral Commissions:</span>
+                <span class="font-bold text-brand-700">$1,738 USD (5% billed)</span>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

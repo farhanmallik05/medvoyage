@@ -4,7 +4,17 @@ from pathlib import Path
 import sqlite3
 from threading import RLock
 from typing import Dict, List, Optional, Union
-from medvoyage.models import AftercareMilestone, ConsultationBooking, PatientInquiry, Provider, Treatment
+from medvoyage.models import (
+    AftercareMilestone,
+    ConsultationBooking,
+    Notification,
+    PatientCase,
+    PatientInquiry,
+    Provider,
+    ProviderReview,
+    ReferralRecord,
+    Treatment,
+)
 
 
 class MedVoyageStorage:
@@ -51,6 +61,36 @@ class MedVoyageStorage:
     def list_providers(self) -> List[Provider]:
         raise NotImplementedError
 
+    def save_case(self, case: PatientCase) -> PatientCase:
+        raise NotImplementedError
+
+    def get_case(self, case_id: str) -> Optional[PatientCase]:
+        raise NotImplementedError
+
+    def list_cases(self) -> List[PatientCase]:
+        raise NotImplementedError
+
+    def update_case_status(self, case_id: str, status: str, notes: Optional[str] = None) -> bool:
+        raise NotImplementedError
+
+    def save_review(self, review: ProviderReview) -> ProviderReview:
+        raise NotImplementedError
+
+    def list_reviews(self, provider_id: Optional[str] = None) -> List[ProviderReview]:
+        raise NotImplementedError
+
+    def save_referral(self, referral: ReferralRecord) -> ReferralRecord:
+        raise NotImplementedError
+
+    def list_referrals(self) -> List[ReferralRecord]:
+        raise NotImplementedError
+
+    def save_notification(self, notif: Notification) -> Notification:
+        raise NotImplementedError
+
+    def list_notifications(self, recipient: Optional[str] = None) -> List[Notification]:
+        raise NotImplementedError
+
     def clear(self):
         raise NotImplementedError
 
@@ -65,6 +105,66 @@ class InMemoryMedVoyageStorage(MedVoyageStorage):
         self._aftercare: Dict[str, List[AftercareMilestone]] = {}
         self._treatments: Dict[str, Treatment] = {}
         self._providers: Dict[str, Provider] = {}
+        self._cases: Dict[str, PatientCase] = {}
+        self._reviews: Dict[str, ProviderReview] = {}
+        self._referrals: Dict[str, ReferralRecord] = {}
+        self._notifications: Dict[str, Notification] = {}
+
+    def save_case(self, case: PatientCase) -> PatientCase:
+        with self._lock:
+            self._cases[case.id] = case
+            return case
+
+    def get_case(self, case_id: str) -> Optional[PatientCase]:
+        with self._lock:
+            return self._cases.get(case_id)
+
+    def list_cases(self) -> List[PatientCase]:
+        with self._lock:
+            return list(self._cases.values())
+
+    def update_case_status(self, case_id: str, status: str, notes: Optional[str] = None) -> bool:
+        with self._lock:
+            case = self._cases.get(case_id)
+            if not case:
+                return False
+            case.status = status
+            if notes:
+                case.clinical_notes = notes
+            return True
+
+    def save_review(self, review: ProviderReview) -> ProviderReview:
+        with self._lock:
+            self._reviews[review.id] = review
+            return review
+
+    def list_reviews(self, provider_id: Optional[str] = None) -> List[ProviderReview]:
+        with self._lock:
+            items = list(self._reviews.values())
+            if provider_id:
+                items = [r for r in items if r.provider_id == provider_id]
+            return items
+
+    def save_referral(self, referral: ReferralRecord) -> ReferralRecord:
+        with self._lock:
+            self._referrals[referral.id] = referral
+            return referral
+
+    def list_referrals(self) -> List[ReferralRecord]:
+        with self._lock:
+            return list(self._referrals.values())
+
+    def save_notification(self, notif: Notification) -> Notification:
+        with self._lock:
+            self._notifications[notif.id] = notif
+            return notif
+
+    def list_notifications(self, recipient: Optional[str] = None) -> List[Notification]:
+        with self._lock:
+            items = list(self._notifications.values())
+            if recipient:
+                items = [n for n in items if n.recipient == recipient]
+            return items
 
     def save_treatment(self, treatment: Treatment) -> Treatment:
         with self._lock:
@@ -135,6 +235,10 @@ class InMemoryMedVoyageStorage(MedVoyageStorage):
             self._inquiries.clear()
             self._bookings.clear()
             self._aftercare.clear()
+            self._cases.clear()
+            self._reviews.clear()
+            self._referrals.clear()
+            self._notifications.clear()
 
 
 class SQLiteMedVoyageStorage(MedVoyageStorage):
@@ -210,6 +314,53 @@ class SQLiteMedVoyageStorage(MedVoyageStorage):
                         specialty TEXT NOT NULL,
                         country TEXT NOT NULL,
                         data TEXT NOT NULL
+                    )
+                    """
+                )
+                conn.execute(
+                    """
+                    CREATE TABLE IF NOT EXISTS patient_cases (
+                        id TEXT PRIMARY KEY,
+                        inquiry_id TEXT NOT NULL,
+                        patient_name TEXT NOT NULL,
+                        treatment_id TEXT NOT NULL,
+                        status TEXT NOT NULL,
+                        data TEXT NOT NULL,
+                        created_at TEXT NOT NULL
+                    )
+                    """
+                )
+                conn.execute(
+                    """
+                    CREATE TABLE IF NOT EXISTS reviews (
+                        id TEXT PRIMARY KEY,
+                        provider_id TEXT NOT NULL,
+                        rating REAL NOT NULL,
+                        data TEXT NOT NULL,
+                        created_at TEXT NOT NULL
+                    )
+                    """
+                )
+                conn.execute(
+                    """
+                    CREATE TABLE IF NOT EXISTS referrals (
+                        id TEXT PRIMARY KEY,
+                        referrer_email TEXT NOT NULL,
+                        status TEXT NOT NULL,
+                        data TEXT NOT NULL,
+                        created_at TEXT NOT NULL
+                    )
+                    """
+                )
+                conn.execute(
+                    """
+                    CREATE TABLE IF NOT EXISTS notifications (
+                        id TEXT PRIMARY KEY,
+                        recipient TEXT NOT NULL,
+                        category TEXT NOT NULL,
+                        is_read INTEGER NOT NULL,
+                        data TEXT NOT NULL,
+                        created_at TEXT NOT NULL
                     )
                     """
                 )
@@ -392,6 +543,124 @@ class SQLiteMedVoyageStorage(MedVoyageStorage):
                 )
                 return True
 
+    def save_case(self, case: PatientCase) -> PatientCase:
+        with self._lock:
+            data_json = case.model_dump_json()
+            with self._connection() as conn:
+                conn.execute(
+                    """
+                    INSERT INTO patient_cases (id, inquiry_id, patient_name, treatment_id, status, data, created_at)
+                    VALUES (?, ?, ?, ?, ?, ?, ?)
+                    ON CONFLICT(id) DO UPDATE SET
+                        status = excluded.status,
+                        data = excluded.data
+                    """,
+                    (case.id, case.inquiry_id, case.patient_name, case.treatment_id, str(case.status), data_json, case.created_at.isoformat()),
+                )
+            return case
+
+    def get_case(self, case_id: str) -> Optional[PatientCase]:
+        with self._lock:
+            with self._connection() as conn:
+                cursor = conn.execute("SELECT data FROM patient_cases WHERE id = ?", (case_id,))
+                row = cursor.fetchone()
+                if not row:
+                    return None
+                return PatientCase.model_validate_json(row["data"])
+
+    def list_cases(self) -> List[PatientCase]:
+        with self._lock:
+            with self._connection() as conn:
+                cursor = conn.execute("SELECT data FROM patient_cases ORDER BY created_at DESC")
+                rows = cursor.fetchall()
+                return [PatientCase.model_validate_json(r["data"]) for r in rows]
+
+    def update_case_status(self, case_id: str, status: str, notes: Optional[str] = None) -> bool:
+        with self._lock:
+            case = self.get_case(case_id)
+            if not case:
+                return False
+            case.status = status
+            if notes:
+                case.clinical_notes = notes
+            self.save_case(case)
+            return True
+
+    def save_review(self, review: ProviderReview) -> ProviderReview:
+        with self._lock:
+            data_json = review.model_dump_json()
+            with self._connection() as conn:
+                conn.execute(
+                    """
+                    INSERT INTO reviews (id, provider_id, rating, data, created_at)
+                    VALUES (?, ?, ?, ?, ?)
+                    ON CONFLICT(id) DO UPDATE SET
+                        rating = excluded.rating,
+                        data = excluded.data
+                    """,
+                    (review.id, review.provider_id, review.rating, data_json, review.created_at.isoformat()),
+                )
+            return review
+
+    def list_reviews(self, provider_id: Optional[str] = None) -> List[ProviderReview]:
+        with self._lock:
+            with self._connection() as conn:
+                if provider_id:
+                    cursor = conn.execute("SELECT data FROM reviews WHERE provider_id = ? ORDER BY created_at DESC", (provider_id,))
+                else:
+                    cursor = conn.execute("SELECT data FROM reviews ORDER BY created_at DESC")
+                rows = cursor.fetchall()
+                return [ProviderReview.model_validate_json(r["data"]) for r in rows]
+
+    def save_referral(self, referral: ReferralRecord) -> ReferralRecord:
+        with self._lock:
+            data_json = referral.model_dump_json()
+            with self._connection() as conn:
+                conn.execute(
+                    """
+                    INSERT INTO referrals (id, referrer_email, status, data, created_at)
+                    VALUES (?, ?, ?, ?, ?)
+                    ON CONFLICT(id) DO UPDATE SET
+                        status = excluded.status,
+                        data = excluded.data
+                    """,
+                    (referral.id, referral.referrer_email, referral.status, data_json, referral.created_at.isoformat()),
+                )
+            return referral
+
+    def list_referrals(self) -> List[ReferralRecord]:
+        with self._lock:
+            with self._connection() as conn:
+                cursor = conn.execute("SELECT data FROM referrals ORDER BY created_at DESC")
+                rows = cursor.fetchall()
+                return [ReferralRecord.model_validate_json(r["data"]) for r in rows]
+
+    def save_notification(self, notif: Notification) -> Notification:
+        with self._lock:
+            data_json = notif.model_dump_json()
+            with self._connection() as conn:
+                conn.execute(
+                    """
+                    INSERT INTO notifications (id, recipient, category, is_read, data, created_at)
+                    VALUES (?, ?, ?, ?, ?, ?)
+                    ON CONFLICT(id) DO UPDATE SET
+                        is_read = excluded.is_read,
+                        data = excluded.data
+                    """,
+                    (notif.id, notif.recipient, notif.category, 1 if notif.is_read else 0, data_json, notif.created_at.isoformat()),
+                )
+            return notif
+
+    def list_notifications(self, recipient: Optional[str] = None) -> List[Notification]:
+        with self._lock:
+            with self._connection() as conn:
+                if recipient:
+                    cursor = conn.execute("SELECT data FROM notifications WHERE recipient = ? ORDER BY created_at DESC", (recipient,))
+                else:
+                    cursor = conn.execute("SELECT data FROM notifications ORDER BY created_at DESC")
+                rows = cursor.fetchall()
+                return [Notification.model_validate_json(r["data"]) for r in rows]
+
     def clear(self):
         with self._lock:
             with self._connection() as conn:
@@ -400,3 +669,7 @@ class SQLiteMedVoyageStorage(MedVoyageStorage):
                 conn.execute("DELETE FROM aftercare_milestones")
                 conn.execute("DELETE FROM treatments")
                 conn.execute("DELETE FROM providers")
+                conn.execute("DELETE FROM patient_cases")
+                conn.execute("DELETE FROM reviews")
+                conn.execute("DELETE FROM referrals")
+                conn.execute("DELETE FROM notifications")

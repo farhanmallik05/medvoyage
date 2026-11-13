@@ -1,0 +1,89 @@
+{% extends "base.html" %}
+
+{% block title %}Hospital Appointments & Consultations | MedVoyage{% endblock %}
+
+{% block content %}
+<div class="bg-gradient-to-b from-slate-900 to-slate-950 text-white py-10 border-b border-slate-800">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <a href="/portal/leads" class="text-xs font-bold text-emerald-400 hover:text-emerald-300 flex items-center space-x-1 mb-3">
+            <i class="fa-solid fa-arrow-left text-[10px]"></i>
+            <span>Back to Leads</span>
+        </a>
+        <div class="flex flex-col sm:flex-row justify-between sm:items-center gap-4">
+            <div>
+                <span class="text-xs font-mono font-bold text-emerald-400 uppercase tracking-wider bg-emerald-950 px-3 py-1 rounded-full border border-emerald-800">
+                    Hospital Calendar Management &bull; PRD §3
+                </span>
+                <h1 class="text-3xl font-black mt-2">Confirmed Telehealth Consultations</h1>
+                <p class="text-slate-400 text-xs sm:text-sm mt-1">
+                    Manage upcoming video slots, doctor schedules, and pre-op clinical evaluations.
+                </p>
+            </div>
+            <a href="/portal/analytics" class="bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700 font-bold text-xs px-4 py-2.5 rounded-xl transition">
+                View Conversion Funnel &rarr;
+            </a>
+        </div>
+    </div>
+</div>
+
+<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+    <div class="bg-white rounded-3xl p-6 sm:p-8 border border-slate-200 shadow-sm">
+        <div class="flex justify-between items-center mb-6">
+            <h3 class="text-base font-bold text-slate-900">Active Bookings ({{ bookings | length }})</h3>
+            <span class="text-xs font-bold text-emerald-700 bg-emerald-50 px-3 py-1 rounded-full border border-emerald-200">
+                Encrypted WebRTC Connected
+            </span>
+        </div>
+
+        <div class="overflow-x-auto">
+            <table class="w-full text-left border-collapse text-xs">
+                <thead>
+                    <tr class="border-b border-slate-200 text-slate-400 font-bold uppercase tracking-wider text-[10px]">
+                        <th class="py-3 px-4">Booking ID</th>
+                        <th class="py-3 px-4">Case Inquiry ID</th>
+                        <th class="py-3 px-4">Assigned Doctor</th>
+                        <th class="py-3 px-4">Scheduled Date & Time</th>
+                        <th class="py-3 px-4">Modality</th>
+                        <th class="py-3 px-4">Status</th>
+                        <th class="py-3 px-4 text-right">Actions</th>
+                    </tr>
+                </thead>
+                <tbody class="divide-y divide-slate-100">
+                    {% for b in bookings %}
+                    <tr class="hover:bg-slate-50 transition">
+                        <td class="py-4 px-4 font-mono font-bold text-brand-700">
+                            {{ b.booking_id }}
+                        </td>
+                        <td class="py-4 px-4 font-mono text-slate-600">
+                            {{ b.inquiry_id }}
+                        </td>
+                        <td class="py-4 px-4 font-bold text-slate-900">
+                            {{ b.provider_id }}
+                        </td>
+                        <td class="py-4 px-4 font-semibold text-slate-800">
+                            {{ b.scheduled_at.strftime('%Y-%m-%d %H:%M UTC') if b.scheduled_at else 'Upcoming' }}
+                        </td>
+                        <td class="py-4 px-4">
+                            <span class="bg-blue-100 text-blue-800 text-[10px] font-bold px-2 py-0.5 rounded-full flex items-center w-fit space-x-1">
+                                <i class="fa-solid fa-video text-[9px]"></i>
+                                <span>{{ b.consultation_type }}</span>
+                            </span>
+                        </td>
+                        <td class="py-4 px-4">
+                            <span class="bg-emerald-100 text-brand-800 text-[10px] font-bold px-2.5 py-0.5 rounded-full">
+                                {{ b.status }}
+                            </span>
+                        </td>
+                        <td class="py-4 px-4 text-right space-x-2">
+                            <a href="/aftercare/{{ b.booking_id }}" class="bg-brand-600 hover:bg-brand-700 text-white font-bold px-3 py-1.5 rounded-lg shadow-xs transition">
+                                90d Aftercare
+                            </a>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+{% endblock %}

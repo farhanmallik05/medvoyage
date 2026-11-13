@@ -48,14 +48,14 @@ Open the interactive Swagger API documentation: `http://localhost:8000/docs`
 
 ## 🧪 Testing
 
-Run all 25 automated unit and integration tests verifying matching, pricing, NLP extraction, catalog ingestion, and SQLite persistence:
+Run all 26 automated unit and integration tests verifying matching, pricing, NLP extraction, catalog ingestion, SQLite persistence, and multi-page web UI routes:
 ```bash
 python -m pytest
 ```
 
 Output:
 ```text
-tests/test_api.py .....
+tests/test_api.py ......
 tests/test_auth_and_security.py .
 tests/test_booking_and_aftercare.py .
 tests/test_catalog.py ..
@@ -65,8 +65,36 @@ tests/test_medical_record_extractor.py .....
 tests/test_models.py ..
 tests/test_quote_engine.py ..
 tests/test_sqlite_persistence.py .
-============================= 25 passed in 0.56s =============================
+============================= 26 passed in 0.84s =============================
 ```
+
+---
+
+## 🌐 Full Two-Sided Marketplace Route Map
+
+### 👤 Patient Journey UI (EthAum PRD 14-Step Workflow)
+- **Homepage & Search**: `http://localhost:8000/`
+- **Treatment Catalogue**: `http://localhost:8000/treatments`
+- **Clinical Treatment Guide**: `http://localhost:8000/treatments/knee-replacement`
+- **Destinations Hub**: `http://localhost:8000/destinations`
+- **City Guide (Abu Dhabi)**: `http://localhost:8000/destinations/uae-abu-dhabi`
+- **Verified Doctors Directory**: `http://localhost:8000/providers`
+- **Doctor Profile & Reviews**: `http://localhost:8000/providers/prov-ramesh-apollo`
+- **Start Medical Case Intake**: `http://localhost:8000/inquiry/new`
+- **AI Matching Results**: `http://localhost:8000/inquiry/inq-sample-knee/matches`
+- **Side-by-Side Quote Comparison**: `http://localhost:8000/compare`
+- **Book Telehealth Consultation**: `http://localhost:8000/book/prov-ramesh-apollo`
+- **90-Day Continuous Aftercare**: `http://localhost:8000/aftercare/bk-sample-knee`
+- **Discharge Summary NLP Parser**: `http://localhost:8000/records/upload`
+- **5% Healthcare Referral Program**: `http://localhost:8000/referral`
+- **Help Centre & FAQs**: `http://localhost:8000/help`
+
+### 🏥 Hospital & Doctor Portal (EthAum PRD Section 3 & 7)
+- **Hospital Lead Inbox**: `http://localhost:8000/portal/leads`
+- **Patient Case CRM Review**: `http://localhost:8000/portal/leads/inq-sample-knee`
+- **Hospital Quote Builder**: `http://localhost:8000/portal/quote/new`
+- **Consultation Calendar**: `http://localhost:8000/portal/appointments`
+- **Executive CRM Analytics**: `http://localhost:8000/portal/analytics`
 
 ---
 

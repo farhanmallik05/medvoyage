@@ -1,0 +1,93 @@
+{% extends "base.html" %}
+
+{% block title %}Hospital Quote Builder | MedVoyage{% endblock %}
+
+{% block content %}
+<div class="bg-gradient-to-b from-slate-900 to-slate-950 text-white py-10 border-b border-slate-800">
+    <div class="max-w-4xl mx-auto px-4 sm:px-6">
+        <a href="/portal/leads" class="text-xs font-bold text-emerald-400 hover:text-emerald-300 flex items-center space-x-1 mb-3">
+            <i class="fa-solid fa-arrow-left text-[10px]"></i>
+            <span>Back to Leads</span>
+        </a>
+        <span class="text-xs font-mono font-bold text-emerald-400 uppercase tracking-wider bg-emerald-950 px-3 py-1 rounded-full border border-emerald-800">
+            PRD Section 3 &bull; Hospital Quote Builder
+        </span>
+        <h1 class="text-3xl font-black mt-2">Generate Transparent Surgical Proposal</h1>
+        <p class="text-slate-400 text-xs sm:text-sm mt-1">
+            Construct an itemized, anti-surprise billing package for patient case #{{ inquiry_id or 'General' }}.
+        </p>
+    </div>
+</div>
+
+<div class="max-w-4xl mx-auto px-4 sm:px-6 py-12" x-data="{
+    procedureFee: 4200,
+    surgeonFee: 2400,
+    stayFee: 1600,
+    anesthesiaFee: 800,
+    get totalPackage() {
+        return Number(this.procedureFee) + Number(this.surgeonFee) + Number(this.stayFee) + Number(this.anesthesiaFee);
+    }
+}">
+    <form action="/portal/quote/send" method="POST" class="bg-white rounded-3xl p-6 sm:p-10 border border-slate-200 shadow-sm space-y-6">
+        <input type="hidden" name="inquiry_id" value="{{ inquiry_id }}">
+
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <div>
+                <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-2">Hospital Operating Facility *</label>
+                <select name="hospital_id" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-2.5 text-xs font-semibold text-slate-800 focus:outline-none focus:ring-2 focus:ring-brand-500">
+                    {% for h in hospitals %}
+                    <option value="{{ h.id }}">{{ h.name }} ({{ h.city }}, {{ h.country }})</option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div>
+                <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-2">Primary Operating Surgeon *</label>
+                <select name="provider_id" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-2.5 text-xs font-semibold text-slate-800 focus:outline-none focus:ring-2 focus:ring-brand-500">
+                    {% for p in providers %}
+                    <option value="{{ p.id }}">{{ p.name }} &bull; {{ p.title }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+        </div>
+
+        <!-- Itemized Cost Fields (PRD §3 Quote Builder) -->
+        <div class="p-6 bg-slate-50 rounded-3xl border border-slate-200 space-y-4">
+            <h4 class="text-xs font-bold uppercase tracking-wider text-slate-700">Decomposed Transparent Fees (USD)</h4>
+            
+            <div class="grid grid-cols-2 sm:grid-cols-4 gap-3 text-xs">
+                <div>
+                    <label class="block font-medium text-slate-600 mb-1">OR & Procedure Fee</label>
+                    <input type="number" name="procedure_fee" x-model="procedureFee" class="w-full bg-white border border-slate-200 rounded-xl p-2.5 font-bold text-slate-900 focus:ring-2 focus:ring-brand-500">
+                </div>
+                <div>
+                    <label class="block font-medium text-slate-600 mb-1">Surgeon Fee</label>
+                    <input type="number" name="surgeon_fee" x-model="surgeonFee" class="w-full bg-white border border-slate-200 rounded-xl p-2.5 font-bold text-slate-900 focus:ring-2 focus:ring-brand-500">
+                </div>
+                <div>
+                    <label class="block font-medium text-slate-600 mb-1">Private Suite Stay</label>
+                    <input type="number" name="stay_fee" x-model="stayFee" class="w-full bg-white border border-slate-200 rounded-xl p-2.5 font-bold text-slate-900 focus:ring-2 focus:ring-brand-500">
+                </div>
+                <div>
+                    <label class="block font-medium text-slate-600 mb-1">Anesthesia & Meds</label>
+                    <input type="number" name="anesthesia_fee" x-model="anesthesiaFee" class="w-full bg-white border border-slate-200 rounded-xl p-2.5 font-bold text-slate-900 focus:ring-2 focus:ring-brand-500">
+                </div>
+            </div>
+
+            <div class="pt-3 border-t border-slate-200 flex justify-between items-center text-sm font-bold text-slate-900">
+                <span>Calculated Guaranteed Package:</span>
+                <span class="text-2xl font-black text-brand-700" x-text="'$' + totalPackage.toLocaleString() + ' USD'"></span>
+            </div>
+        </div>
+
+        <div>
+            <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-2">Quote Validity & Cancellation Terms</label>
+            <input type="text" name="terms" value="Quote valid for 60 days. Full refund of booking slot deposit if cancelled 14+ days prior to admission." class="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-2.5 text-xs text-slate-800 focus:outline-none focus:ring-2 focus:ring-brand-500">
+        </div>
+
+        <button type="submit" class="w-full bg-brand-600 hover:bg-brand-700 text-white font-bold text-xs sm:text-sm py-3.5 rounded-xl shadow-md shadow-brand-500/20 transition flex items-center justify-center space-x-2">
+            <i class="fa-solid fa-paper-plane"></i>
+            <span>Dispatch Itemized Quote to Patient Portal &rarr;</span>
+        </button>
+    </form>
+</div>
+{% endblock %}

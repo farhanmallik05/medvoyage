@@ -1,0 +1,99 @@
+{% extends "base.html" %}
+
+{% block title %}Hospital Lead Inbox & CRM Pipeline | MedVoyage{% endblock %}
+
+{% block content %}
+<div class="bg-gradient-to-b from-slate-900 to-slate-950 text-white py-10 border-b border-slate-800">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="flex flex-col sm:flex-row justify-between sm:items-center gap-4">
+            <div>
+                <span class="text-xs font-mono font-bold uppercase tracking-wider text-emerald-400 bg-emerald-950 px-3 py-1 rounded-full border border-emerald-800">
+                    Hospital & Doctor CRM Portal
+                </span>
+                <h1 class="text-3xl font-black mt-2">Incoming International Patient Leads</h1>
+                <p class="text-slate-400 text-xs sm:text-sm mt-1">
+                    Manage patient inquiry triage, review clinical summaries, generate quotes, and track consultation SLAs.
+                </p>
+            </div>
+            <div class="flex items-center space-x-3 text-xs font-bold">
+                <a href="/portal/analytics" class="bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700 px-4 py-2.5 rounded-xl transition flex items-center space-x-1.5">
+                    <i class="fa-solid fa-chart-line text-emerald-400"></i>
+                    <span>CRM Analytics</span>
+                </a>
+                <a href="/portal/appointments" class="bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700 px-4 py-2.5 rounded-xl transition flex items-center space-x-1.5">
+                    <i class="fa-regular fa-calendar-check text-emerald-400"></i>
+                    <span>Appointments</span>
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+    <!-- Pipeline Status Tabs (PRD §3 CRM Pipeline) -->
+    <div class="bg-white p-6 rounded-3xl border border-slate-200 shadow-sm mb-8">
+        <div class="flex justify-between items-center mb-6">
+            <h3 class="text-base font-bold text-slate-900">Patient Case Pipeline ({{ inquiries | length }} Total Inquiries)</h3>
+            <span class="text-xs text-slate-500 font-medium">Response SLA: <strong>&lt; 24 Hours</strong></span>
+        </div>
+
+        <div class="overflow-x-auto">
+            <table class="w-full text-left border-collapse text-xs">
+                <thead>
+                    <tr class="border-b border-slate-200 text-slate-400 font-bold uppercase tracking-wider text-[10px]">
+                        <th class="py-3 px-4">Patient / ID</th>
+                        <th class="py-3 px-4">Procedure</th>
+                        <th class="py-3 px-4">Origin & Language</th>
+                        <th class="py-3 px-4">Budget Target</th>
+                        <th class="py-3 px-4">Urgency</th>
+                        <th class="py-3 px-4">Pipeline Status</th>
+                        <th class="py-3 px-4 text-right">Actions</th>
+                    </tr>
+                </thead>
+                <tbody class="divide-y divide-slate-100">
+                    {% for inq in inquiries %}
+                    <tr class="hover:bg-slate-50 transition">
+                        <td class="py-4 px-4">
+                            <span class="font-bold text-slate-900 block">{{ inq.patient_name }}</span>
+                            <span class="font-mono text-[11px] text-slate-400">{{ inq.id }}</span>
+                        </td>
+                        <td class="py-4 px-4 font-semibold text-slate-800">
+                            {{ inq.treatment_id }}
+                        </td>
+                        <td class="py-4 px-4 text-slate-600">
+                            <span>{{ inq.patient_country }}</span>
+                            <span class="text-slate-400 block text-[11px]">Lang: {{ inq.preferred_language }}</span>
+                        </td>
+                        <td class="py-4 px-4 font-bold text-slate-900">
+                            ${{ "{:,.0f}".format(inq.budget_usd) }} USD
+                        </td>
+                        <td class="py-4 px-4">
+                            {% if inq.urgency == 'URGENT' %}
+                            <span class="bg-red-100 text-red-800 text-[10px] font-bold px-2 py-0.5 rounded-full">Urgent</span>
+                            {% elif inq.urgency == 'WITHIN_MONTH' %}
+                            <span class="bg-amber-100 text-amber-800 text-[10px] font-bold px-2 py-0.5 rounded-full">&lt; 30 Days</span>
+                            {% else %}
+                            <span class="bg-slate-100 text-slate-700 text-[10px] font-bold px-2 py-0.5 rounded-full">Flexible</span>
+                            {% endif %}
+                        </td>
+                        <td class="py-4 px-4">
+                            <span class="bg-emerald-100 text-brand-800 text-[10px] font-bold px-2.5 py-0.5 rounded-full">
+                                Qualified Lead
+                            </span>
+                        </td>
+                        <td class="py-4 px-4 text-right space-x-2">
+                            <a href="/portal/leads/{{ inq.id }}" class="bg-slate-100 hover:bg-slate-200 text-slate-800 font-bold px-3 py-1.5 rounded-lg transition">
+                                Review Case
+                            </a>
+                            <a href="/portal/quote/new?inquiry_id={{ inq.id }}" class="bg-brand-600 hover:bg-brand-700 text-white font-bold px-3 py-1.5 rounded-lg shadow-xs transition">
+                                Build Quote
+                            </a>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+{% endblock %}

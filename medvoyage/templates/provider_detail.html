@@ -1,0 +1,155 @@
+{% extends "base.html" %}
+
+{% block title %}{{ provider.name }} | Doctor Profile & Credentials | MedVoyage{% endblock %}
+
+{% block content %}
+<div class="bg-gradient-to-b from-emerald-50/50 to-slate-50 py-10 border-b border-slate-200">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <a href="/providers" class="text-xs font-bold text-brand-600 hover:text-brand-700 flex items-center space-x-1 mb-3">
+            <i class="fa-solid fa-arrow-left text-[10px]"></i>
+            <span>Back to Doctors</span>
+        </a>
+        <div class="flex flex-col md:flex-row md:items-center justify-between gap-6">
+            <div class="flex items-center space-x-4">
+                <div class="w-16 h-16 sm:w-20 sm:h-20 rounded-3xl bg-gradient-to-tr from-brand-600 to-teal-500 text-white font-bold text-2xl flex items-center justify-center shadow-md">
+                    <i class="fa-solid fa-user-doctor"></i>
+                </div>
+                <div>
+                    <div class="flex items-center space-x-2">
+                        <h1 class="text-2xl sm:text-3xl font-black text-slate-900">{{ provider.name }}</h1>
+                        <span class="bg-emerald-100 text-emerald-800 text-xs font-bold px-2.5 py-0.5 rounded-full flex items-center space-x-1">
+                            <i class="fa-solid fa-circle-check text-brand-600"></i>
+                            <span>Board Verified</span>
+                        </span>
+                    </div>
+                    <p class="text-sm font-semibold text-brand-700 mt-1">{{ provider.title }} &bull; {{ provider.specialty }}</p>
+                    <p class="text-xs text-slate-500 mt-0.5">{{ provider.hospital_name }} &bull; {{ provider.city }}, {{ provider.country }}</p>
+                </div>
+            </div>
+
+            <div class="flex items-center space-x-3">
+                <a href="/book/{{ provider.id }}" class="bg-brand-600 hover:bg-brand-700 text-white font-bold text-xs sm:text-sm px-6 py-3 rounded-xl shadow-md shadow-brand-500/20 transition">
+                    Book Video Consultation &rarr;
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+        <div class="lg:col-span-2 space-y-8">
+            <!-- Credentials & Experience (PRD §2 Doctor Profiles) -->
+            <div class="bg-white rounded-3xl p-6 sm:p-8 border border-slate-200 shadow-sm">
+                <h2 class="text-lg font-bold text-slate-900 mb-4 flex items-center space-x-2">
+                    <i class="fa-solid fa-certificate text-brand-600"></i>
+                    <span>Accreditations & Board Certifications</span>
+                </h2>
+                <div class="space-y-3">
+                    {% for c in provider.credentials %}
+                    <div class="flex items-center space-x-3 p-3 bg-slate-50 rounded-xl border border-slate-100 text-xs">
+                        <i class="fa-solid fa-award text-amber-500 text-base"></i>
+                        <span class="font-bold text-slate-800">{{ c }}</span>
+                    </div>
+                    {% endfor %}
+                </div>
+
+                <div class="mt-6 grid grid-cols-3 gap-3 pt-6 border-t border-slate-100 text-center">
+                    <div class="p-3 bg-emerald-50 rounded-xl">
+                        <div class="text-xl font-black text-brand-700">{{ provider.years_experience }}</div>
+                        <div class="text-[11px] text-emerald-800 mt-0.5">Years Experience</div>
+                    </div>
+                    <div class="p-3 bg-emerald-50 rounded-xl">
+                        <div class="text-xl font-black text-brand-700">{{ provider.successful_cases }}+</div>
+                        <div class="text-[11px] text-emerald-800 mt-0.5">Verified Surgeries</div>
+                    </div>
+                    <div class="p-3 bg-emerald-50 rounded-xl">
+                        <div class="text-xl font-black text-brand-700">{{ provider.rating }} / 5.0</div>
+                        <div class="text-[11px] text-emerald-800 mt-0.5">Patient Satisfaction</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Hospital Facility Detail -->
+            {% if hospital %}
+            <div class="bg-white rounded-3xl p-6 sm:p-8 border border-slate-200 shadow-sm">
+                <h2 class="text-lg font-bold text-slate-900 mb-4 flex items-center space-x-2">
+                    <i class="fa-solid fa-hospital text-brand-600"></i>
+                    <span>Operating Hospital: {{ hospital.name }}</span>
+                </h2>
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs mb-4">
+                    <div class="p-3 bg-slate-50 rounded-xl">
+                        <span class="text-slate-400 block font-medium">JCI Status:</span>
+                        <span class="font-bold text-slate-900 mt-0.5 block"><i class="fa-solid fa-circle-check text-brand-600 mr-1"></i> Internationally Accredited</span>
+                    </div>
+                    <div class="p-3 bg-slate-50 rounded-xl">
+                        <span class="text-slate-400 block font-medium">Capacity:</span>
+                        <span class="font-bold text-slate-900 mt-0.5 block">{{ hospital.bed_count }} Inpatient Beds</span>
+                    </div>
+                    <div class="p-3 bg-slate-50 rounded-xl">
+                        <span class="text-slate-400 block font-medium">Airport Transport:</span>
+                        <span class="font-bold text-slate-900 mt-0.5 block">Complimentary Private Transfer</span>
+                    </div>
+                    <div class="p-3 bg-slate-50 rounded-xl">
+                        <span class="text-slate-400 block font-medium">Languages / Translators:</span>
+                        <span class="font-bold text-slate-900 mt-0.5 block">{{ hospital.translators_available | join(', ') }}</span>
+                    </div>
+                </div>
+            </div>
+            {% endif %}
+
+            <!-- Verified Patient Reviews (PRD §2 Reviews) -->
+            <div class="bg-white rounded-3xl p-6 sm:p-8 border border-slate-200 shadow-sm" id="reviews">
+                <div class="flex justify-between items-center mb-6">
+                    <h2 class="text-lg font-bold text-slate-900 flex items-center space-x-2">
+                        <i class="fa-solid fa-comment-medical text-brand-600"></i>
+                        <span>Verified Patient Reviews</span>
+                    </h2>
+                    <span class="text-xs font-bold text-amber-900 bg-amber-50 px-3 py-1 rounded-full border border-amber-200">
+                        <i class="fa-solid fa-star text-amber-500 mr-1"></i> {{ provider.rating }} average rating
+                    </span>
+                </div>
+
+                <div class="space-y-4">
+                    {% for r in reviews %}
+                    <div class="p-4 bg-slate-50 rounded-2xl border border-slate-100 text-xs">
+                        <div class="flex justify-between items-start">
+                            <div>
+                                <span class="font-bold text-slate-900 block text-sm">{{ r.patient_name }}</span>
+                                <span class="text-[11px] text-slate-500">{{ r.patient_country }} &bull; Procedure: {{ r.treatment_name }}</span>
+                            </div>
+                            <span class="bg-emerald-100 text-emerald-800 text-[10px] font-bold px-2 py-0.5 rounded-full">Verified Patient</span>
+                        </div>
+                        <p class="text-slate-700 mt-3 leading-relaxed italic">"{{ r.comment }}"</p>
+                    </div>
+                    {% else %}
+                    <div class="text-xs text-slate-500 italic p-4 bg-slate-50 rounded-2xl">
+                        No reviews submitted yet. Be the first patient to review Dr. {{ provider.name }}.
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+
+        <!-- Sidebar Actions -->
+        <div class="space-y-6">
+            <div class="bg-white rounded-3xl p-6 border border-slate-200 shadow-sm text-xs space-y-4">
+                <h3 class="text-xs font-bold uppercase tracking-wider text-slate-500">Book Telehealth Appointment</h3>
+                <p class="text-slate-600 leading-relaxed">
+                    Speak directly with Dr. {{ provider.name }} over encrypted high-definition video before making travel arrangements.
+                </p>
+                <div class="p-3 bg-emerald-50 rounded-xl border border-emerald-100 text-emerald-950 font-medium">
+                    <i class="fa-regular fa-clock text-brand-600 mr-1"></i> Next Consultation Availability: <strong>Within 48 Hours</strong>
+                </div>
+
+                <a href="/book/{{ provider.id }}" class="w-full block text-center bg-brand-600 hover:bg-brand-700 text-white font-bold text-xs py-3 rounded-xl shadow-md shadow-brand-500/20 transition">
+                    Schedule 30-Min Consultation &rarr;
+                </a>
+                <a href="/inquiry/new" class="w-full block text-center bg-slate-100 hover:bg-slate-200 text-slate-800 font-bold text-xs py-2.5 rounded-xl transition">
+                    Submit Records for Case Review
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

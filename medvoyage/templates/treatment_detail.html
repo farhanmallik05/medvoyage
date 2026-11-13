@@ -1,0 +1,172 @@
+{% extends "base.html" %}
+
+{% block title %}{{ treatment.name }} | Clinical Guide & Overview | MedVoyage{% endblock %}
+
+{% block content %}
+<div class="bg-gradient-to-b from-emerald-50/50 to-slate-50 py-10 border-b border-slate-200">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <a href="/treatments" class="text-xs font-bold text-brand-600 hover:text-brand-700 flex items-center space-x-1 mb-3">
+            <i class="fa-solid fa-arrow-left text-[10px]"></i>
+            <span>Back to Treatments Catalog</span>
+        </a>
+        <div class="flex flex-col md:flex-row md:items-center justify-between gap-4">
+            <div>
+                <span class="text-xs font-bold uppercase tracking-wider text-brand-600 bg-emerald-50 px-3 py-1 rounded-full">{{ treatment.category }}</span>
+                <h1 class="text-3xl sm:text-4xl font-black text-slate-900 mt-2">{{ treatment.name }}</h1>
+                <p class="text-slate-600 text-sm mt-1">Medically reviewed clinical overview and patient travel pathway.</p>
+            </div>
+            <div class="flex items-center space-x-3">
+                <a href="/compare?treatment={{ treatment.id }}" class="bg-brand-600 hover:bg-brand-700 text-white font-bold text-xs sm:text-sm px-5 py-3 rounded-xl shadow-md shadow-brand-500/20 transition">
+                    Compare Hospital Quotes &rarr;
+                </a>
+                <a href="/inquiry/new?treatment={{ treatment.id }}" class="bg-white hover:bg-slate-100 text-slate-800 border border-slate-300 font-bold text-xs sm:text-sm px-4 py-3 rounded-xl transition">
+                    Request Personal Case
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+        <!-- Main Clinical Content (PRD §2 Treatment Catalogue Requirements) -->
+        <div class="lg:col-span-2 space-y-8">
+            <!-- Overview -->
+            <div class="bg-white rounded-3xl p-6 sm:p-8 border border-slate-200 shadow-sm">
+                <h2 class="text-lg font-bold text-slate-900 mb-3 flex items-center space-x-2">
+                    <i class="fa-solid fa-stethoscope text-brand-600"></i>
+                    <span>Procedure Description & Technique</span>
+                </h2>
+                <p class="text-slate-600 text-sm leading-relaxed">{{ treatment.description }}</p>
+                <div class="mt-4 p-4 bg-slate-50 rounded-2xl border border-slate-100 text-xs text-slate-600">
+                    <strong class="text-slate-900">Clinical Focus:</strong> Minimally invasive computer navigation protocols minimize soft tissue trauma, leading to rapid weight-bearing mobilization within 24 to 48 hours post-operation.
+                </div>
+            </div>
+
+            <!-- Eligibility Questions -->
+            <div class="bg-white rounded-3xl p-6 sm:p-8 border border-slate-200 shadow-sm">
+                <h2 class="text-lg font-bold text-slate-900 mb-4 flex items-center space-x-2">
+                    <i class="fa-solid fa-clipboard-question text-brand-600"></i>
+                    <span>Patient Candidacy & Eligibility Criteria</span>
+                </h2>
+                <div class="space-y-3 text-xs">
+                    <div class="flex items-start space-x-3 p-3 bg-emerald-50/60 rounded-xl border border-emerald-100">
+                        <i class="fa-solid fa-check-circle text-brand-600 text-sm mt-0.5"></i>
+                        <div>
+                            <span class="font-bold text-slate-900">Severe Structural Deterioration:</span>
+                            <p class="text-slate-600 mt-0.5">Radiographically documented advanced end-stage joint space narrowing, osteoarthritis, or severe clinical functional impairment unresponsive to conservative physical therapy.</p>
+                        </div>
+                    </div>
+                    <div class="flex items-start space-x-3 p-3 bg-emerald-50/60 rounded-xl border border-emerald-100">
+                        <i class="fa-solid fa-check-circle text-brand-600 text-sm mt-0.5"></i>
+                        <div>
+                            <span class="font-bold text-slate-900">Pre-Operative Medical Clearance:</span>
+                            <p class="text-slate-600 mt-0.5">Cardiopulmonary stability adequate for regional or general anesthesia. Telehealth pre-clearance with anesthesiologist required.</p>
+                        </div>
+                    </div>
+                    <div class="flex items-start space-x-3 p-3 bg-emerald-50/60 rounded-xl border border-emerald-100">
+                        <i class="fa-solid fa-check-circle text-brand-600 text-sm mt-0.5"></i>
+                        <div>
+                            <span class="font-bold text-slate-900">International Travel Fit:</span>
+                            <p class="text-slate-600 mt-0.5">Willingness to remain in destination city for a minimum of {{ treatment.typical_stay_days + 4 }} to {{ treatment.typical_stay_days + 7 }} days for post-discharge wound inspection prior to return flight.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Preparation & Recovery Pathway -->
+            <div class="bg-white rounded-3xl p-6 sm:p-8 border border-slate-200 shadow-sm">
+                <h2 class="text-lg font-bold text-slate-900 mb-4 flex items-center space-x-2">
+                    <i class="fa-solid fa-timeline text-brand-600"></i>
+                    <span>Pre-Travel Preparation & 90-Day Recovery Timeline</span>
+                </h2>
+                <div class="relative pl-6 space-y-6 before:absolute before:left-2 before:top-2 before:bottom-2 before:w-0.5 before:bg-slate-200 text-xs">
+                    <div class="relative">
+                        <span class="absolute -left-6 top-1 w-4 h-4 rounded-full bg-brand-600 ring-4 ring-emerald-50"></span>
+                        <h4 class="font-bold text-slate-900">2 to 3 Weeks Pre-Travel: Digital Records Workup</h4>
+                        <p class="text-slate-600 mt-0.5">Upload recent MRI/X-ray DICOM images or clinical discharge summaries. Telehealth pre-consultation with operating surgeon.</p>
+                    </div>
+                    <div class="relative">
+                        <span class="absolute -left-6 top-1 w-4 h-4 rounded-full bg-brand-600 ring-4 ring-emerald-50"></span>
+                        <h4 class="font-bold text-slate-900">Day 1 to {{ treatment.typical_stay_days }}: Hospital Stay & Procedure</h4>
+                        <p class="text-slate-600 mt-0.5">Admission to private inpatient suite. Surgery performed under JCI clinical governance. In-hospital physiotherapy begins on Day 1.</p>
+                    </div>
+                    <div class="relative">
+                        <span class="absolute -left-6 top-1 w-4 h-4 rounded-full bg-brand-600 ring-4 ring-emerald-50"></span>
+                        <h4 class="font-bold text-slate-900">Day {{ treatment.typical_stay_days + 1 }} to {{ treatment.typical_stay_days + 5 }}: Hotel Recovery & Fit-to-Fly Clearance</h4>
+                        <p class="text-slate-600 mt-0.5">Relax in affiliated partner hotel. Final wound inspection and Fit-to-Fly medical certificate issued.</p>
+                    </div>
+                    <div class="relative">
+                        <span class="absolute -left-6 top-1 w-4 h-4 rounded-full bg-emerald-400 ring-4 ring-emerald-50"></span>
+                        <h4 class="font-bold text-slate-900">Day 14 to Day 90: Remote Telehealth Check-ins</h4>
+                        <p class="text-slate-600 mt-0.5">Structured follow-ups at 14, 30, and 90 days with your operating surgeon through MedVoyage encrypted portal.</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Questions to Ask Your Surgeon -->
+            <div class="bg-white rounded-3xl p-6 sm:p-8 border border-slate-200 shadow-sm">
+                <h2 class="text-lg font-bold text-slate-900 mb-3 flex items-center space-x-2">
+                    <i class="fa-solid fa-comments text-brand-600"></i>
+                    <span>Essential Questions to Ask During Your Virtual Call</span>
+                </h2>
+                <ul class="text-xs text-slate-700 space-y-2 list-disc pl-5">
+                    <li>How many procedures of this exact type have you performed in the past 12 months?</li>
+                    <li>Which specific manufacturer implant and model will be utilized, and is there an international warranty?</li>
+                    <li>What are your personal surgical site infection and revision rates compared to international benchmarks?</li>
+                    <li>What is the contingency protocol if an unexpected ICU stay or medication adjustment is required?</li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- Sidebar Specs & Quote Benchmark Card -->
+        <div class="space-y-6">
+            <div class="bg-white rounded-3xl p-6 border border-slate-200 shadow-sm">
+                <h3 class="text-sm font-bold uppercase tracking-wider text-slate-500 mb-4">Procedure Quick Facts</h3>
+                <div class="space-y-3 text-xs">
+                    <div class="flex justify-between py-2 border-b border-slate-100">
+                        <span class="text-slate-500">Typical Inpatient Stay:</span>
+                        <span class="font-bold text-slate-900">{{ treatment.typical_stay_days }} Nights</span>
+                    </div>
+                    <div class="flex justify-between py-2 border-b border-slate-100">
+                        <span class="text-slate-500">Rehabilitation Period:</span>
+                        <span class="font-bold text-slate-900">{{ treatment.recovery_days }} Days</span>
+                    </div>
+                    <div class="flex justify-between py-2 border-b border-slate-100">
+                        <span class="text-slate-500">US Private Benchmark:</span>
+                        <span class="font-bold text-slate-900">${{ "{:,.0f}".format(treatment.us_benchmark_cost_usd) }} USD</span>
+                    </div>
+                    <div class="flex justify-between py-2 border-b border-slate-100">
+                        <span class="text-slate-500">MedVoyage Package Range:</span>
+                        <span class="font-bold text-brand-600">${{ "{:,.0f}".format(treatment.us_benchmark_cost_usd * 0.22) }} - ${{ "{:,.0f}".format(treatment.us_benchmark_cost_usd * 0.45) }}</span>
+                    </div>
+                    <div class="flex justify-between py-2">
+                        <span class="text-slate-500">Average Savings:</span>
+                        <span class="font-bold text-emerald-600 bg-emerald-50 px-2 py-0.5 rounded">55% - 78%</span>
+                    </div>
+                </div>
+
+                <div class="mt-6">
+                    <a href="/compare?treatment={{ treatment.id }}" class="w-full block text-center bg-brand-600 hover:bg-brand-700 text-white font-bold text-xs py-3 rounded-xl shadow-md shadow-brand-500/20 transition">
+                        Compare Hospital Packages &rarr;
+                    </a>
+                    <a href="/inquiry/new?treatment={{ treatment.id }}" class="w-full block text-center bg-slate-100 hover:bg-slate-200 text-slate-800 font-bold text-xs py-2.5 rounded-xl transition mt-2">
+                        Create Personal Case
+                    </a>
+                </div>
+            </div>
+
+            <!-- Anti-Surprise Billing Guarantee -->
+            <div class="bg-emerald-50 border border-emerald-200 p-5 rounded-3xl text-xs space-y-2">
+                <div class="flex items-center space-x-2 text-brand-800 font-bold">
+                    <i class="fa-solid fa-shield-halved text-sm"></i>
+                    <span>Transparent Quote Guarantee</span>
+                </div>
+                <p class="text-emerald-900 leading-relaxed">
+                    MedVoyage mandates that all participating hospitals disclose surgeon fees, private room rates, implant hardware, and potential additional ICU or hotel nights before you confirm.
+                </p>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

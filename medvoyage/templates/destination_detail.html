@@ -1,0 +1,129 @@
+{% extends "base.html" %}
+
+{% block title %}{{ destination.city }}, {{ destination.country }} | Destination Guide | MedVoyage{% endblock %}
+
+{% block content %}
+<div class="bg-gradient-to-b from-emerald-50/50 to-slate-50 py-10 border-b border-slate-200">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <a href="/destinations" class="text-xs font-bold text-brand-600 hover:text-brand-700 flex items-center space-x-1 mb-3">
+            <i class="fa-solid fa-arrow-left text-[10px]"></i>
+            <span>Back to Destinations</span>
+        </a>
+        <div class="flex flex-col md:flex-row md:items-center justify-between gap-4">
+            <div>
+                <span class="text-xs font-bold uppercase tracking-wider text-brand-600 bg-emerald-50 px-3 py-1 rounded-full">{{ destination.country }}</span>
+                <h1 class="text-3xl sm:text-4xl font-black text-slate-900 mt-2">{{ destination.city }} Healthcare Guide</h1>
+                <p class="text-slate-600 text-sm mt-1">{{ destination.description }}</p>
+            </div>
+            <a href="/providers?country={{ destination.country }}" class="bg-brand-600 hover:bg-brand-700 text-white font-bold text-xs sm:text-sm px-5 py-3 rounded-xl shadow-md shadow-brand-500/20 transition">
+                Find {{ destination.city }} Specialists &rarr;
+            </a>
+        </div>
+    </div>
+</div>
+
+<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+        <div class="lg:col-span-2 space-y-6">
+            <!-- Travel & Visa Card -->
+            <div class="bg-white rounded-3xl p-6 sm:p-8 border border-slate-200 shadow-sm">
+                <h2 class="text-lg font-bold text-slate-900 mb-4 flex items-center space-x-2">
+                    <i class="fa-solid fa-passport text-brand-600"></i>
+                    <span>Medical Visa & Entry Guidelines</span>
+                </h2>
+                <p class="text-slate-700 text-xs sm:text-sm leading-relaxed mb-4">{{ destination.visa_policy }}</p>
+                
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs">
+                    <div class="p-3.5 bg-slate-50 rounded-xl border border-slate-100">
+                        <span class="font-bold text-slate-800 block">International Arrival Airport</span>
+                        <span class="text-slate-600 mt-0.5 block">{{ destination.international_hub }}</span>
+                    </div>
+                    <div class="p-3.5 bg-slate-50 rounded-xl border border-slate-100">
+                        <span class="font-bold text-slate-800 block">Attendant Visa Support</span>
+                        <span class="text-slate-600 mt-0.5 block">Up to 2 medical attendants permitted</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Accommodation & Transport -->
+            <div class="bg-white rounded-3xl p-6 sm:p-8 border border-slate-200 shadow-sm">
+                <h2 class="text-lg font-bold text-slate-900 mb-4 flex items-center space-x-2">
+                    <i class="fa-solid fa-hotel text-brand-600"></i>
+                    <span>Patient Accommodation & Recovery Logistics</span>
+                </h2>
+                <p class="text-slate-600 text-xs leading-relaxed mb-4">
+                    All MedVoyage accredited partner hospitals in {{ destination.city }} provide dedicated airport transfers and have vetted nearby recovery hotels equipped with wheelchair accessibility and nursing support.
+                </p>
+                <div class="p-4 bg-emerald-50 rounded-2xl border border-emerald-100 flex items-center justify-between text-xs">
+                    <div>
+                        <span class="font-bold text-emerald-950 block">Average 4-Star Patient Hotel</span>
+                        <span class="text-emerald-800">Affiliated medical rate near hospital district</span>
+                    </div>
+                    <span class="text-base font-bold text-emerald-900">${{ destination.average_hotel_cost_usd_per_night | int }}/night</span>
+                </div>
+            </div>
+
+            <!-- Accredited Partner Hospitals in this destination -->
+            <div class="bg-white rounded-3xl p-6 sm:p-8 border border-slate-200 shadow-sm">
+                <h2 class="text-lg font-bold text-slate-900 mb-4 flex items-center space-x-2">
+                    <i class="fa-solid fa-hospital text-brand-600"></i>
+                    <span>Accredited Hospitals in {{ destination.city }}</span>
+                </h2>
+                <div class="space-y-4">
+                    {% for h in hospitals %}
+                    <div class="p-4 bg-slate-50 rounded-2xl border border-slate-100 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3">
+                        <div>
+                            <div class="flex items-center space-x-2">
+                                <h4 class="font-bold text-slate-900 text-sm">{{ h.name }}</h4>
+                                <span class="bg-emerald-100 text-emerald-800 text-[10px] font-bold px-2 py-0.5 rounded-full">JCI Accredited</span>
+                            </div>
+                            <div class="text-xs text-slate-500 mt-1 flex flex-wrap gap-2">
+                                <span><i class="fa-solid fa-bed mr-1 text-slate-400"></i> {{ h.bed_count }} Beds</span>
+                                <span>&bull;</span>
+                                <span>Est. {{ h.established_year }}</span>
+                                <span>&bull;</span>
+                                <span>Airport Transfer Included</span>
+                            </div>
+                        </div>
+                        <a href="/providers?country={{ destination.country }}" class="bg-white hover:bg-slate-100 text-brand-600 border border-brand-200 font-bold text-xs px-3.5 py-2 rounded-xl transition">
+                            View Doctors &rarr;
+                        </a>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+
+        <!-- Sidebar Summary -->
+        <div class="space-y-6">
+            <div class="bg-white rounded-3xl p-6 border border-slate-200 shadow-sm text-xs space-y-4">
+                <h3 class="text-xs font-bold uppercase tracking-wider text-slate-500">Destination Overview</h3>
+                <div class="space-y-3">
+                    <div class="flex justify-between py-1.5 border-b border-slate-100">
+                        <span class="text-slate-500">Country:</span>
+                        <span class="font-bold text-slate-800">{{ destination.country }}</span>
+                    </div>
+                    <div class="flex justify-between py-1.5 border-b border-slate-100">
+                        <span class="text-slate-500">JCI Hospitals Count:</span>
+                        <span class="font-bold text-slate-800">{{ destination.jci_hospitals_count }} Certified</span>
+                    </div>
+                    <div class="flex justify-between py-1.5 border-b border-slate-100">
+                        <span class="text-slate-500">Avg. Hotel Cost:</span>
+                        <span class="font-bold text-slate-800">${{ destination.average_hotel_cost_usd_per_night | int }}/night</span>
+                    </div>
+                    <div class="flex justify-between py-1.5">
+                        <span class="text-slate-500">International Airport:</span>
+                        <span class="font-bold text-slate-800">{{ destination.international_hub }}</span>
+                    </div>
+                </div>
+
+                <div class="pt-2">
+                    <a href="/inquiry/new" class="w-full block text-center bg-brand-600 hover:bg-brand-700 text-white font-bold text-xs py-3 rounded-xl shadow-md shadow-brand-500/20 transition">
+                        Request Quote for {{ destination.city }} &rarr;
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

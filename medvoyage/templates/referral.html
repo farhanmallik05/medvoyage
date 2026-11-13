@@ -1,0 +1,102 @@
+{% extends "base.html" %}
+
+{% block title %}Healthcare Partner Referral Program | MedVoyage{% endblock %}
+
+{% block content %}
+<div class="bg-gradient-to-b from-emerald-50/50 to-slate-50 py-10 border-b border-slate-200">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <span class="text-xs font-bold uppercase tracking-wider text-brand-600 bg-emerald-50 px-3 py-1 rounded-full">
+            EthAum PRD Section 4 &bull; Step 14
+        </span>
+        <h1 class="text-3xl sm:text-4xl font-black text-slate-900 mt-2">Healthcare Partner Referral Network</h1>
+        <p class="text-slate-600 text-xs sm:text-sm mt-1 max-w-3xl">
+            Clinics, referring physicians, and healthcare partners earn a transparent 5% referral commission on the final billed treatment amount upon successful patient procedure completion.
+        </p>
+    </div>
+</div>
+
+<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+    <!-- Value Prop Cards -->
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-12">
+        <div class="bg-white rounded-3xl p-6 border border-slate-200 shadow-sm">
+            <span class="w-10 h-10 rounded-2xl bg-emerald-100 text-brand-700 flex items-center justify-center text-lg mb-4">
+                <i class="fa-solid fa-percent"></i>
+            </span>
+            <h3 class="text-base font-bold text-slate-900">5% Commission on Billed Amount</h3>
+            <p class="text-xs text-slate-600 mt-1.5 leading-relaxed">
+                Eligible referring clinicians and clinics receive 5% payouts directly transferred within 30 days of completed treatment.
+            </p>
+        </div>
+        <div class="bg-white rounded-3xl p-6 border border-slate-200 shadow-sm">
+            <span class="w-10 h-10 rounded-2xl bg-blue-100 text-blue-700 flex items-center justify-center text-lg mb-4">
+                <i class="fa-solid fa-hospital-user"></i>
+            </span>
+            <h3 class="text-base font-bold text-slate-900">End-to-End Continuity of Care</h3>
+            <p class="text-xs text-slate-600 mt-1.5 leading-relaxed">
+                Referring doctors receive digital discharge summaries, surgical operation notes, and 90-day telehealth updates for seamless home care.
+            </p>
+        </div>
+        <div class="bg-white rounded-3xl p-6 border border-slate-200 shadow-sm">
+            <span class="w-10 h-10 rounded-2xl bg-purple-100 text-purple-700 flex items-center justify-center text-lg mb-4">
+                <i class="fa-solid fa-chart-pie"></i>
+            </span>
+            <h3 class="text-base font-bold text-slate-900">Automated Ledger Tracking</h3>
+            <p class="text-xs text-slate-600 mt-1.5 leading-relaxed">
+                Track patient intake milestones, surgery confirmation, and pending payout transfers in real time.
+            </p>
+        </div>
+    </div>
+
+    <!-- Active Referral Ledger (PRD §4 Step 14) -->
+    <div class="bg-white rounded-3xl p-6 sm:p-8 border border-slate-200 shadow-sm">
+        <div class="flex justify-between items-center mb-6">
+            <h3 class="text-base font-bold text-slate-900">Tracked Partner Referrals & Payouts</h3>
+            <span class="text-xs font-bold text-brand-700 bg-emerald-50 px-3 py-1 rounded-full border border-emerald-200">
+                5% Program Active
+            </span>
+        </div>
+
+        <div class="overflow-x-auto">
+            <table class="w-full text-left border-collapse text-xs">
+                <thead>
+                    <tr class="border-b border-slate-200 text-slate-400 font-bold uppercase tracking-wider text-[10px]">
+                        <th class="py-3 px-4">Referral ID</th>
+                        <th class="py-3 px-4">Referring Partner</th>
+                        <th class="py-3 px-4">Patient Name</th>
+                        <th class="py-3 px-4">Billed Amount</th>
+                        <th class="py-3 px-4">Commission (5%)</th>
+                        <th class="py-3 px-4 text-right">Status</th>
+                    </tr>
+                </thead>
+                <tbody class="divide-y divide-slate-100">
+                    {% for r in referrals %}
+                    <tr class="hover:bg-slate-50 transition">
+                        <td class="py-4 px-4 font-mono font-bold text-slate-800">
+                            {{ r.id }}
+                        </td>
+                        <td class="py-4 px-4">
+                            <span class="font-bold text-slate-900 block">{{ r.referrer_name }}</span>
+                            <span class="text-[11px] text-slate-500">{{ r.referrer_type }} &bull; {{ r.referrer_email }}</span>
+                        </td>
+                        <td class="py-4 px-4 font-semibold text-slate-800">
+                            {{ r.patient_name }}
+                        </td>
+                        <td class="py-4 px-4 font-bold text-slate-900">
+                            ${{ "{:,.2f}".format(r.billed_amount_usd) }}
+                        </td>
+                        <td class="py-4 px-4 font-black text-brand-700">
+                            ${{ "{:,.2f}".format(r.commission_earned_usd) }} USD
+                        </td>
+                        <td class="py-4 px-4 text-right">
+                            <span class="px-2.5 py-1 rounded-full text-[10px] font-bold {{ 'bg-emerald-100 text-brand-800' if r.status == 'PAID' else 'bg-blue-100 text-blue-800' }}">
+                                {{ r.status }}
+                            </span>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+{% endblock %}

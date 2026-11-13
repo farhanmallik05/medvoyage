@@ -65,3 +65,68 @@ def test_marketplace_html_homepage():
     assert res.status_code == 200
     assert "text/html" in res.headers["content-type"]
     assert "MedVoyage" in res.text
+
+
+def test_web_ui_routes_coverage():
+    # 1. Treatments Catalog & Detail
+    r_t = client.get("/treatments")
+    assert r_t.status_code == 200
+    assert "Comprehensive Treatment Catalogue" in r_t.text
+
+    r_td = client.get("/treatments/knee-replacement")
+    assert r_td.status_code == 200
+    assert "Procedure Description" in r_td.text
+
+    # 2. Destinations & Detail
+    r_d = client.get("/destinations")
+    assert r_d.status_code == 200
+    assert "Accredited Medical Tourism Destinations" in r_d.text
+
+    r_dd = client.get("/destinations/uae-abu-dhabi")
+    assert r_dd.status_code == 200
+    assert "Abu Dhabi Healthcare Guide" in r_dd.text
+
+    # 3. Providers & Detail
+    r_p = client.get("/providers")
+    assert r_p.status_code == 200
+    assert "Verified Doctors & Partner Hospitals" in r_p.text
+
+    r_pd = client.get("/providers/prov-ramesh-apollo")
+    assert r_pd.status_code == 200
+    assert "Board Certifications" in r_pd.text
+
+    # 4. Compare Quotes
+    r_c = client.get("/compare?treatment=knee-replacement")
+    assert r_c.status_code == 200
+    assert "Itemized Procedure Quote Comparison" in r_c.text
+
+    # 5. Inquiry New & Records Upload
+    r_inq = client.get("/inquiry/new")
+    assert r_inq.status_code == 200
+    assert "Create Medical Case" in r_inq.text
+
+    r_up = client.get("/records/upload")
+    assert r_up.status_code == 200
+    assert "Discharge Summary & Record Parser" in r_up.text
+
+    # 6. Referral & Help Pages
+    r_ref = client.get("/referral")
+    assert r_ref.status_code == 200
+    assert "5% Commission" in r_ref.text
+
+    r_hlp = client.get("/help")
+    assert r_hlp.status_code == 200
+    assert "Help Centre" in r_hlp.text
+
+    # 7. Provider Portal CRM & Analytics
+    r_lead = client.get("/portal/leads")
+    assert r_lead.status_code == 200
+    assert "Incoming International Patient Leads" in r_lead.text
+
+    r_qb = client.get("/portal/quote/new")
+    assert r_qb.status_code == 200
+    assert "Generate Transparent Surgical Proposal" in r_qb.text
+
+    r_an = client.get("/portal/analytics")
+    assert r_an.status_code == 200
+    assert "Executive CRM Analytics Dashboard" in r_an.text

@@ -1,0 +1,106 @@
+{% extends "base.html" %}
+
+{% block title %}Continuous Recovery & 90-Day Aftercare Pathway | MedVoyage{% endblock %}
+
+{% block content %}
+<div class="bg-gradient-to-b from-emerald-50/50 to-slate-50 py-10 border-b border-slate-200">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="flex flex-col sm:flex-row justify-between sm:items-center gap-4">
+            <div>
+                <span class="text-xs font-bold uppercase tracking-wider text-brand-600 bg-emerald-50 px-3 py-1 rounded-full">
+                    EthAum Patient Journey &bull; Step 13 (90-Day Pathway)
+                </span>
+                <h1 class="text-3xl font-black text-slate-900 mt-2">Continuous Care & Recovery Milestones</h1>
+                <p class="text-slate-600 text-xs sm:text-sm mt-1">
+                    Booking ID: <strong class="font-mono text-slate-800">{{ booking_id }}</strong> &bull; Remote surgical check-ins, medication adherence & Fit-to-Fly validation.
+                </p>
+            </div>
+            <div class="flex items-center space-x-2">
+                <span class="text-xs font-bold bg-emerald-100 text-brand-700 px-3 py-1.5 rounded-full border border-brand-200 flex items-center space-x-1.5">
+                    <i class="fa-solid fa-heart-pulse"></i>
+                    <span>Active Telehealth Monitoring</span>
+                </span>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+    <!-- Progress Indicator -->
+    <div class="bg-white p-6 rounded-3xl border border-slate-200 shadow-sm mb-8">
+        <div class="flex justify-between items-center mb-3">
+            <h3 class="text-sm font-bold text-slate-900">Post-Operative Recovery Status</h3>
+            {% set completed_count = milestones | selectattr('is_completed') | list | length %}
+            <span class="text-xs font-bold text-brand-600 bg-emerald-50 px-2.5 py-1 rounded-full">
+                {{ completed_count }} of {{ milestones | length }} Milestones Completed
+            </span>
+        </div>
+        <div class="w-full bg-slate-100 rounded-full h-2.5 overflow-hidden">
+            <div class="bg-gradient-to-r from-brand-600 to-teal-500 h-2.5 rounded-full" style="width: {{ (completed_count / (milestones | length) * 100) | round | int if milestones else 0 }}%"></div>
+        </div>
+    </div>
+
+    <!-- Milestones Timeline (PRD §4 Step 13) -->
+    <div class="relative pl-8 sm:pl-10 space-y-8 before:absolute before:left-3.5 sm:before:left-4 before:top-3 before:bottom-3 before:w-0.5 before:bg-slate-200">
+        {% for m in milestones %}
+        <div class="relative">
+            <!-- Icon Marker -->
+            <div class="absolute -left-8 sm:-left-10 top-0.5 w-7 h-7 sm:w-8 sm:h-8 rounded-full flex items-center justify-center text-xs font-bold {{ 'bg-brand-600 text-white shadow-xs ring-4 ring-emerald-50' if m.is_completed else 'bg-white border-2 border-slate-300 text-slate-500' }}">
+                {% if m.is_completed %}
+                <i class="fa-solid fa-check"></i>
+                {% else %}
+                <span>{{ m.day_post_op }}d</span>
+                {% endif %}
+            </div>
+
+            <div class="bg-white rounded-3xl p-6 border border-slate-200 shadow-sm flex flex-col sm:flex-row justify-between sm:items-center gap-4 hover:border-brand-500 transition">
+                <div class="space-y-1">
+                    <div class="flex items-center space-x-2">
+                        <span class="text-[11px] font-mono font-bold text-brand-700 bg-emerald-50 px-2 py-0.5 rounded-md">Day +{{ m.day_post_op }}</span>
+                        <h4 class="text-base font-bold text-slate-900">{{ m.title }}</h4>
+                        {% if m.telehealth_checkin_required %}
+                        <span class="bg-blue-100 text-blue-800 text-[10px] font-bold px-2 py-0.5 rounded-full flex items-center space-x-1">
+                            <i class="fa-solid fa-video text-[9px]"></i>
+                            <span>Surgeon Video Call</span>
+                        </span>
+                        {% endif %}
+                    </div>
+                    <p class="text-xs text-slate-600 leading-relaxed pt-1">{{ m.instructions }}</p>
+                </div>
+
+                <div class="shrink-0 flex items-center space-x-3">
+                    {% if m.is_completed %}
+                    <span class="text-xs font-bold text-brand-700 bg-emerald-50 px-4 py-2 rounded-xl flex items-center space-x-1.5 border border-emerald-200">
+                        <i class="fa-solid fa-circle-check"></i>
+                        <span>Completed</span>
+                    </span>
+                    {% else %}
+                    <form action="/api/aftercare/{{ booking_id }}/complete/{{ m.id }}" method="POST">
+                        <button type="submit" class="bg-brand-600 hover:bg-brand-700 text-white font-bold text-xs py-2 px-4 rounded-xl shadow-xs transition flex items-center space-x-1">
+                            <span>Mark Complete</span>
+                            <i class="fa-solid fa-check text-[10px]"></i>
+                        </button>
+                    </form>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+
+    <!-- Telehealth Room Launcher Card -->
+    <div class="mt-12 bg-slate-900 text-white p-8 rounded-3xl shadow-xl flex flex-col md:flex-row justify-between items-center gap-6">
+        <div>
+            <span class="text-xs font-mono font-bold text-emerald-400 uppercase tracking-wider bg-emerald-950 px-3 py-1 rounded-full border border-emerald-800">
+                Encrypted Virtual Recovery Room
+            </span>
+            <h3 class="text-xl sm:text-2xl font-bold mt-2">Next Remote Surgeon Check-in</h3>
+            <p class="text-slate-400 text-xs mt-1">Connect with your operating surgeon directly from your browser. Zero software installation.</p>
+        </div>
+        <a href="https://telehealth.medvoyage.io/room/{{ booking_id }}" target="_blank" class="bg-emerald-500 hover:bg-emerald-600 text-slate-950 font-extrabold text-xs sm:text-sm px-6 py-3.5 rounded-xl transition shadow-lg shadow-emerald-500/20 flex items-center space-x-2">
+            <i class="fa-solid fa-video"></i>
+            <span>Enter Virtual Consultation Room &rarr;</span>
+        </a>
+    </div>
+</div>
+{% endblock %}

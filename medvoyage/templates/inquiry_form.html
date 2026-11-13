@@ -1,0 +1,185 @@
+{% extends "base.html" %}
+
+{% block title %}Start Medical Case & Request Quote | MedVoyage{% endblock %}
+
+{% block content %}
+<div class="bg-gradient-to-b from-emerald-50/50 to-slate-50 py-10 border-b border-slate-200">
+    <div class="max-w-4xl mx-auto px-4 sm:px-6">
+        <span class="text-xs font-bold uppercase tracking-wider text-brand-600 bg-emerald-50 px-3 py-1 rounded-full">EthAum Patient Intake Wizard</span>
+        <h1 class="text-3xl sm:text-4xl font-black text-slate-900 mt-2">Create Medical Case & Request Quotes</h1>
+        <p class="text-slate-600 text-sm mt-1">
+            Provide your surgical parameters or paste your discharge summary. Our AI engine matches your clinical requirements with verified international hospital departments.
+        </p>
+    </div>
+</div>
+
+<div class="max-w-4xl mx-auto px-4 sm:px-6 py-12" x-data="{ step: 1, extracting: false, nlpSuccess: false }">
+    <!-- Stepper Header -->
+    <div class="flex items-center justify-between mb-8 pb-4 border-b border-slate-200 text-xs">
+        <div class="flex items-center space-x-2">
+            <span :class="step >= 1 ? 'bg-brand-600 text-white' : 'bg-slate-200 text-slate-600'" class="w-6 h-6 rounded-full flex items-center justify-center font-bold text-xs">1</span>
+            <span class="font-bold" :class="step >= 1 ? 'text-slate-900' : 'text-slate-400'">Procedure & Urgency</span>
+        </div>
+        <div class="w-8 h-0.5 bg-slate-200"></div>
+        <div class="flex items-center space-x-2">
+            <span :class="step >= 2 ? 'bg-brand-600 text-white' : 'bg-slate-200 text-slate-600'" class="w-6 h-6 rounded-full flex items-center justify-center font-bold text-xs">2</span>
+            <span class="font-bold" :class="step >= 2 ? 'text-slate-900' : 'text-slate-400'">Demographics & Budget</span>
+        </div>
+        <div class="w-8 h-0.5 bg-slate-200"></div>
+        <div class="flex items-center space-x-2">
+            <span :class="step >= 3 ? 'bg-brand-600 text-white' : 'bg-slate-200 text-slate-600'" class="w-6 h-6 rounded-full flex items-center justify-center font-bold text-xs">3</span>
+            <span class="font-bold" :class="step >= 3 ? 'text-slate-900' : 'text-slate-400'">Clinical Records & AI</span>
+        </div>
+    </div>
+
+    <!-- Intake Form -->
+    <form action="/inquiry/new" method="POST" class="bg-white rounded-3xl p-6 sm:p-10 border border-slate-200 shadow-sm space-y-6">
+        <!-- STEP 1 -->
+        <div x-show="step === 1" class="space-y-6">
+            <h3 class="text-base font-bold text-slate-900">Step 1: Treatment Selection & Urgency</h3>
+            <div>
+                <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-2">Required Treatment / Procedure *</label>
+                <select name="treatment_id" id="treatment_select" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 text-sm font-semibold text-slate-800 focus:outline-none focus:ring-2 focus:ring-brand-500" required>
+                    {% for t in treatments %}
+                    <option value="{{ t.id }}" {% if selected_treatment == t.id %}selected{% endif %}>{{ t.name }} ({{ t.category }})</option>
+                    {% endfor %}
+                </select>
+            </div>
+
+            <div>
+                <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-2">Clinical Urgency *</label>
+                <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                    <label class="p-3.5 bg-slate-50 rounded-2xl border border-slate-200 cursor-pointer hover:border-brand-500 transition flex items-center space-x-2">
+                        <input type="radio" name="urgency" value="URGENT" class="text-brand-600 focus:ring-brand-500">
+                        <span class="text-xs font-bold text-slate-800">Urgent (1 - 2 weeks)</span>
+                    </label>
+                    <label class="p-3.5 bg-slate-50 rounded-2xl border border-slate-200 cursor-pointer hover:border-brand-500 transition flex items-center space-x-2">
+                        <input type="radio" name="urgency" value="WITHIN_MONTH" checked class="text-brand-600 focus:ring-brand-500">
+                        <span class="text-xs font-bold text-slate-800">Within 30 Days</span>
+                    </label>
+                    <label class="p-3.5 bg-slate-50 rounded-2xl border border-slate-200 cursor-pointer hover:border-brand-500 transition flex items-center space-x-2">
+                        <input type="radio" name="urgency" value="FLEXIBLE" class="text-brand-600 focus:ring-brand-500">
+                        <span class="text-xs font-bold text-slate-800">Flexible Timeline</span>
+                    </label>
+                </div>
+            </div>
+
+            <div>
+                <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-2">Preferred Destinations (Select all that apply)</label>
+                <div class="grid grid-cols-2 sm:grid-cols-3 gap-2 text-xs">
+                    <label class="flex items-center space-x-2 p-2.5 bg-slate-50 rounded-xl border border-slate-200">
+                        <input type="checkbox" name="preferred_destinations" value="India" checked class="rounded text-brand-600">
+                        <span class="font-medium text-slate-800">India</span>
+                    </label>
+                    <label class="flex items-center space-x-2 p-2.5 bg-slate-50 rounded-xl border border-slate-200">
+                        <input type="checkbox" name="preferred_destinations" value="United Arab Emirates" checked class="rounded text-brand-600">
+                        <span class="font-medium text-slate-800">UAE (Abu Dhabi)</span>
+                    </label>
+                    <label class="flex items-center space-x-2 p-2.5 bg-slate-50 rounded-xl border border-slate-200">
+                        <input type="checkbox" name="preferred_destinations" value="Thailand" checked class="rounded text-brand-600">
+                        <span class="font-medium text-slate-800">Thailand</span>
+                    </label>
+                    <label class="flex items-center space-x-2 p-2.5 bg-slate-50 rounded-xl border border-slate-200">
+                        <input type="checkbox" name="preferred_destinations" value="Turkey" class="rounded text-brand-600">
+                        <span class="font-medium text-slate-800">Turkey</span>
+                    </label>
+                    <label class="flex items-center space-x-2 p-2.5 bg-slate-50 rounded-xl border border-slate-200">
+                        <input type="checkbox" name="preferred_destinations" value="Singapore" class="rounded text-brand-600">
+                        <span class="font-medium text-slate-800">Singapore</span>
+                    </label>
+                </div>
+            </div>
+
+            <div class="pt-4 flex justify-end">
+                <button type="button" @click="step = 2" class="bg-brand-600 hover:bg-brand-700 text-white font-bold text-xs py-3 px-6 rounded-xl transition flex items-center space-x-2 shadow-xs">
+                    <span>Continue to Demographics & Budget</span>
+                    <i class="fa-solid fa-arrow-right"></i>
+                </button>
+            </div>
+        </div>
+
+        <!-- STEP 2 -->
+        <div x-show="step === 2" class="space-y-6">
+            <h3 class="text-base font-bold text-slate-900">Step 2: Patient Demographics & Budget Boundaries</h3>
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <div>
+                    <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-2">Patient Full Name *</label>
+                    <input type="text" name="patient_name" id="inp_patient_name" value="Robert Jenkins" required class="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-2.5 text-xs font-semibold text-slate-800 focus:outline-none focus:ring-2 focus:ring-brand-500">
+                </div>
+                <div>
+                    <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-2">Email Address *</label>
+                    <input type="email" name="patient_email" value="robert.jenkins@example.com" required class="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-2.5 text-xs font-semibold text-slate-800 focus:outline-none focus:ring-2 focus:ring-brand-500">
+                </div>
+            </div>
+
+            <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                <div>
+                    <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-2">Home Country *</label>
+                    <input type="text" name="patient_country" id="inp_patient_country" value="United States" required class="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-2.5 text-xs font-semibold text-slate-800 focus:outline-none focus:ring-2 focus:ring-brand-500">
+                </div>
+                <div>
+                    <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-2">Budget Target (USD) *</label>
+                    <input type="number" name="budget_usd" id="inp_budget_usd" value="15000" step="500" required class="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-2.5 text-xs font-semibold text-slate-800 focus:outline-none focus:ring-2 focus:ring-brand-500">
+                </div>
+                <div>
+                    <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-2">Preferred Language</label>
+                    <select name="preferred_language" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-2.5 text-xs font-semibold text-slate-800 focus:outline-none focus:ring-2 focus:ring-brand-500">
+                        <option value="en">English</option>
+                        <option value="ar">Arabic</option>
+                        <option value="fr">French</option>
+                        <option value="es">Spanish</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="pt-4 flex justify-between">
+                <button type="button" @click="step = 1" class="bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold text-xs py-3 px-5 rounded-xl transition">
+                    &larr; Back
+                </button>
+                <button type="button" @click="step = 3" class="bg-brand-600 hover:bg-brand-700 text-white font-bold text-xs py-3 px-6 rounded-xl transition flex items-center space-x-2 shadow-xs">
+                    <span>Continue to Clinical Summary</span>
+                    <i class="fa-solid fa-arrow-right"></i>
+                </button>
+            </div>
+        </div>
+
+        <!-- STEP 3 -->
+        <div x-show="step === 3" class="space-y-6">
+            <div class="flex justify-between items-center">
+                <h3 class="text-base font-bold text-slate-900">Step 3: Medical Records Summary & AI Extraction</h3>
+                <a href="/records/upload" target="_blank" class="text-brand-600 text-xs font-bold hover:underline flex items-center space-x-1">
+                    <i class="fa-solid fa-wand-magic-sparkles"></i>
+                    <span>Use NLP Discharge Summary Extractor</span>
+                </a>
+            </div>
+
+            <div>
+                <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-2">
+                    Clinical Discharge Notes / Imaging Summary *
+                </label>
+                <textarea name="medical_records_summary" id="medical_records_summary" rows="5" required class="w-full bg-slate-50 border border-slate-200 rounded-2xl p-4 text-xs font-medium text-slate-800 focus:outline-none focus:ring-2 focus:ring-brand-500 leading-relaxed" placeholder="Describe symptoms, imaging findings, comorbidities, prior surgeries... Or paste clinical discharge summary text.">Patient: Robert Jenkins (58yo male from United States). Severe bilateral tricompartmental gonarthrosis with complete medial joint space collapse. Ambulatory with cane. History of hypertension well-controlled on lisinopril. Evaluating for total knee arthroplasty with computer navigation.</textarea>
+            </div>
+
+            <div class="p-4 bg-emerald-50 rounded-2xl border border-emerald-100 text-xs text-emerald-950 flex items-start space-x-3">
+                <i class="fa-solid fa-lock text-brand-600 text-base mt-0.5"></i>
+                <div>
+                    <span class="font-bold">Zero-Knowledge Patient Privacy:</span>
+                    <p class="text-emerald-800 mt-0.5 leading-relaxed">
+                        MedVoyage does not sell or broker your clinical records to marketing agencies. Records are transmitted via end-to-end encryption exclusively to the medical teams you select.
+                    </p>
+                </div>
+            </div>
+
+            <div class="pt-4 flex justify-between">
+                <button type="button" @click="step = 2" class="bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold text-xs py-3 px-5 rounded-xl transition">
+                    &larr; Back
+                </button>
+                <button type="submit" class="bg-gradient-to-r from-brand-600 to-emerald-600 hover:from-brand-700 hover:to-emerald-700 text-white font-bold text-xs sm:text-sm py-3 px-8 rounded-xl shadow-md shadow-brand-500/20 transition flex items-center space-x-2">
+                    <i class="fa-solid fa-microchip"></i>
+                    <span>Run AI Provider Matching &rarr;</span>
+                </button>
+            </div>
+        </div>
+    </form>
+</div>
+{% endblock %}

@@ -1,0 +1,315 @@
+﻿=== PAGE 1 ===
+EthAum  |  Medical Tourism Product Requirements 
+ 
+MEDICAL TOURISM WEBSITE 
+FEATURE & REQUIREMENTS STUDY 
+Product Requirements Document 
+ 
+PRODUCT FOCUS​
+Trusted, end-to-end international healthcare 
+marketplace 
+CORE EXPERIENCE​
+Discover → Evaluate → Coordinate → Treat → 
+Aftercare 
+ 
+1. Product Vision 
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+━━━━━━━━━━━ 
+To build a trusted, end-to-end international healthcare marketplace that enables patients to confidently 
+discover and evaluate healthcare providers across borders. The platform will simplify the healthcare journey 
+by helping patients understand treatment options, compare providers based on clinical expertise, outcomes, 
+and costs, securely share medical records, obtain transparent treatment quotes, and communicate directly 
+with qualified doctors and healthcare professionals. 
+ 
+PATIENT-CENTRIC OUTCOME​
+The platform aims to bring greater transparency, accessibility, and efficiency to international healthcare by 
+connecting patients with suitable providers through a secure and patient-centric digital experience. From initial 
+provider discovery and medical evaluation to treatment coordination and post-treatment follow-up, the product 
+will create a connected ecosystem that supports informed decision-making and continuity of care. 
+ 
+2. Patient-Facing Website Requirements 
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+━━━━━━━━━━━ 
+HOMEPAGE​
+Clear value proposition; treatment and destination search; featured providers; trust indicators; patient stories; 
+process explanation; language and currency selectors; prominent quote CTA; emergency disclaimer. 
+ 
+TREATMENT CATALOGUE​
+Specialty/condition/procedure categories; treatment descriptions; eligibility questions; preparation; recovery; 
+expected stay; risks; questions to ask; related treatments; medically reviewed content; update date. 
+ 
+Confidential • Feature & Requirements StudyEthAum • Confidential • 1 
+
+=== PAGE 2 ===
+EthAum  |  Medical Tourism Product Requirements 
+DESTINATION PAGES​
+Country/city overview; specialties; providers; indicative price ranges; travel considerations; visa-information links; 
+language/currency; accommodation and transport; emergency guidance. 
+ 
+SEARCH AND FILTERS​
+Treatment, condition, doctor, hospital, country, city, language, accreditation, price, availability, virtual consultation, 
+international-patient experience, reviews, financing and insurance. 
+ 
+PROVIDER PROFILES​
+Facility type; location; specialties; treatments; doctors; qualifications; accreditations; international-patient services; 
+facilities; technology; photos/videos/virtual tours; languages; hours; response time; reviews; packages; price ranges; 
+inclusions/exclusions; FAQs; contact. 
+ 
+DOCTOR PROFILES​
+Name; specialty; qualifications; registration where legally publishable; experience; memberships; languages; 
+expertise; affiliations; publications; consultation slots; verified facts versus marketing claims. 
+ 
+TREATMENT PACKAGES​
+Procedure; provider; doctor; price/currency; duration; inclusions/exclusions; nights; tests; medication; transfers; 
+accommodation; follow-up; validity; cancellation terms; final-price disclaimer. 
+ 
+COMPARISON TOOL​
+Side-by-side providers/packages; price; accreditation; credentials; location; inclusions; expected stay; reviews; 
+response time; consultation; travel support; aftercare; save/share comparison. 
+ 
+QUOTATION REQUEST​
+Treatment, diagnosis summary, medical history, destination, budget, timeframe, language, travel party, insurance, 
+contact information and consent. 
+ 
+MEDICAL DOCUMENT UPLOAD​
+Secure upload of reports, scans, prescriptions and identity documents; file validation; encryption; consent; expiry; 
+categories; versioning; access logs; deletion request. 
+ 
+PATIENT ACCOUNT​
+Profile; medical cases; saved providers; enquiries; quotes; messages; appointments; payments; itinerary; 
+documents; consent settings; aftercare tasks. 
+ 
+COMMUNICATION​
+Secure chat; email/SMS/push; optional WhatsApp integration; file sharing; translation; message history; escalation; 
+role-based access. AI Integration. 
+ 
+Confidential • Feature & Requirements StudyEthAum • Confidential • 2 
+
+=== PAGE 3 ===
+EthAum  |  Medical Tourism Product Requirements 
+VIRTUAL CONSULTATION​
+Scheduling; time zones; consent; video/audio; waiting room; secure links; payment if relevant; clinician notes; 
+summary; follow-up tasks. 
+ 
+BOOKING​
+Availability calendar; appointment requests; provider acceptance; confirmation; reminders; rescheduling; 
+cancellation; no-show tracking. 
+ 
+NOTIFICATIONS​
+Enquiry, quote, message, consultation, appointment, payment, document, travel-change and aftercare alerts. 
+ 
+REVIEWS​
+Verified-patient process; consent; moderation; provider response; photo/video testimonials; fraud detection; 
+sponsored-content disclosure. 
+ 
+HELP CENTRE​
+FAQs; glossary; treatment explainers; destination guides; preparation guides; financing/insurance education; 
+multilingual articles; chatbot with human escalation. 
+ 
+3. Hospital, Clinic and Doctor Portal 
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+━━━━━━━━━━━ 
+ONBOARDING​
+Legal entity, licenses, accreditations, insurance, specialties, international-patient capability, languages, facilities, 
+payment details and responsible contact. 
+ 
+VERIFICATION​
+Credential checks, accreditation expiry alerts, complaints/sanctions checks where appropriate, evidence upload, risk 
+tier, approval workflow and periodic re-verification. 
+ 
+PROFILE MANAGEMENT​
+Edit providers, doctors, treatments, packages, prices, photos, videos, FAQs, languages, hours and 
+international-patient services. 
+ 
+LEAD INBOX​
+Enquiries with source, treatment, urgency, consent, assignment, status, notes, attachments, response SLA and 
+duplicate detection. 
+ 
+Confidential • Feature & Requirements StudyEthAum • Confidential • 3 
+
+=== PAGE 4 ===
+EthAum  |  Medical Tourism Product Requirements 
+CRM​
+New → Qualified → Medical Review → Quote Requested → Quote Sent → Consultation → Booked → Treatment → 
+Aftercare → Closed. 
+ 
+QUOTE BUILDER​
+Treatment, doctor, date, inclusions, exclusions, taxes, currency, validity, payment schedule, cancellation terms and 
+attachments. 
+ 
+APPOINTMENT MANAGEMENT​
+Calendars, availability, confirmation, reminders, rescheduling, no-show tracking and scheduling integration. 
+ 
+PATIENT CASE MANAGEMENT​
+Medical records, consent, clinical review tasks, responsible staff, communication history, travel details and aftercare 
+plan. 
+ 
+SECURE COMMUNICATION​
+Patient chat, email, video, internal notes, templates, translation and escalation.. 
+ 
+INTEGRATIONS​
+Calendar, CRM, email, SMS, messaging, payment, video, translation, travel, analytics and hospital systems where 
+feasible. 
+ 
+4. Patient Journey 
+ 
+Confidential • Feature & Requirements StudyEthAum • Confidential • 4 
+01​
+Discover 
+02​
+Create case 
+03​
+Upload records 
+04​
+Qualification 
+05​
+Provider matching 
+ 
+ 
+ 
+ 
+06​
+Quote comparison  
+ 
+ 
+ 
+ 
+07​
+Shortlist 2-3 Hospitals 
+ 
+ 
+ 
+ 
+08​
+Exploratory Virtual Calls 
+09​
+Final provider Selection 
+ 
+ 
+ 
+ 
+ 
+
+=== PAGE 5 ===
+EthAum  |  Medical Tourism Product Requirements 
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+━━━━━━━━━━━ 
+1. Discover​
+The patient visits the platform to search for a specific treatment, medical condition, doctor, hospital, or destination. They can 
+explore available providers, treatments, estimated costs, reviews, accreditations, and locations. 
+ 
+2. Create Case​
+The patient creates a personal medical case by providing basic information such as their treatment requirement, diagnosis, 
+preferred destination, budget, medical history, and expected travel dates. 
+ 
+3. Upload Records​
+The patient securely uploads relevant medical documents such as diagnostic reports, prescriptions, scans, previous 
+treatment records, and other information required by healthcare providers. 
+ 
+4. Qualification​
+The platform reviews the patient's requirements and information to understand the type of treatment needed, urgency, 
+budget, preferred location, and other relevant preferences. Additional information may be requested if required. 
+ 
+5. Provider Matching​
+Based on the patient's case, the platform identifies suitable hospitals, clinics, and doctors. Providers can be matched based 
+on specialization, credentials, accreditation, treatment availability, location, pricing, and international-patient experience. 
+ 
+6. Quote Comparison​
+The patient receives treatment proposals or quotes from suitable providers. The platform allows them to compare treatment 
+costs, inclusions, doctor details, estimated duration, accommodation, tests, medications, and other relevant expenses. 
+ 
+7. Shortlist 2–3 Hospitals 
+The patient shortlists 2–3 hospitals based on the initial information and quotations. No final provider decision is made yet. 
+ 
+8. Exploratory Virtual Calls​
+ The patient has exploratory virtual calls with the shortlisted hospitals. 
+The objective is to help the patient: 
+Confidential • Feature & Requirements StudyEthAum • Confidential • 5 
+ 
+ 
+10​
+Booking and Upfront 
+Payment 
+ 
+ 
+ 
+ 
+11​
+Formal Virtual Consultation  
+12​
+Treatment 
+13​
+Aftercare 
+14​
+Review and Referral 
+ 
+
+=== PAGE 6 ===
+EthAum  |  Medical Tourism Product Requirements 
+●​
+Understand the proposed treatment 
+●​
+Interact with the hospital/doctor 
+●​
+Ask initial questions 
+●​
+Get a better understanding of pricing and treatment scope 
+●​
+Understand the overall treatment experience 
+●​
+Assess communication and comfort with the provider 
+●​
+Build confidence before selecting a hospital 
+  
+ 
+9. Final Provider Selection 
+After the exploratory calls, the patient evaluates the shortlisted providers and finalizes one hospital/provider.  
+ 
+10. Booking & Upfront Payment 
+The patient books the selected provider by paying an upfront booking/slot fee. This payment secures the patient's 
+treatment/consultation slot with the selected hospital.  
+ 
+11. Formal Virtual Medical Consultation 
+After the booking fee is paid, the patient proceeds with the proper/official virtual consultation with the selected doctor or 
+medical team.  
+ 
+12.Treatment 
+Following the formal consultation and subsequent confirmation, the patient proceeds with treatment at the selected hospital.  
+ 
+13. Aftercare 
+EthAum facilitates follow-up consultations, recovery information, medical documentation and continued communication with 
+the healthcare provider.  
+ 
+14. Review & Referral​
+The platform will include a referral program through which clinics, hospitals, nurses, doctors, and other 
+approved healthcare partners can refer patients to the platform for medical treatments. When a referred 
+patient successfully completes the booking and payment process, the referring partner will be eligible to 
+receive a 5% referral commission on the billed amount, subject to the platform’s referral terms and 
+eligibility criteria. The system will track the referral source, patient booking, payment status, and 
+commission automatically, allowing referral partners to monitor their eligible referrals and payouts. This 
+model is designed to create a structured partner network that encourages healthcare professionals and 
+providers to bring qualified patients to the platform. 
+ 
+ASSISTED MEDICAL COORDINATION USING AI​
+It will uses artificial intelligence to simplify and personalize the medical tourism journey for patients. The AI can 
+collect and organize patient information, analyze uploaded medical documents, understand treatment requirements, 
+Confidential • Feature & Requirements StudyEthAum • Confidential • 6 
+
+=== PAGE 7 ===
+EthAum  |  Medical Tourism Product Requirements 
+and identify suitable hospitals, clinics, and doctors based on factors such as specialty, location, availability, treatment 
+type, and patient preferences. It can also assist with appointment scheduling, quotation comparison, reminders, 
+travel planning, document management, and follow-ups. The AI should function as a coordination and 
+decision-support tool rather than a replacement for qualified medical professionals, with medical decisions and 
+treatment recommendations remaining under the responsibility of licensed healthcare providers. 
+CRM ANALYTICS​
+CRM Analytics is a dashboard that helps the medical tourism platform track and analyze the complete patient and 
+provider journey from the first enquiry to completed treatment. It provides insights into lead volume and sources, 
+provider response time, quote conversion, booking conversion, revenue generated, cancellations, patient 
+satisfaction, and provider service performance. The system can also track which marketing channels generate the 
+most qualified leads, identify where patients drop off in the booking journey, and compare provider performance. 
+These insights help the management team improve lead allocation, optimize sales and follow-up processes, identify 
+high-performing providers, and make data-driven decisions to increase bookings and revenue 
+ 
+Confidential • Feature & Requirements StudyEthAum • Confidential • 7 
+

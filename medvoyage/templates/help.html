@@ -1,0 +1,57 @@
+{% extends "base.html" %}
+
+{% block title %}Help Centre & Patient Guides | MedVoyage{% endblock %}
+
+{% block content %}
+<div class="bg-gradient-to-b from-emerald-50/50 to-slate-50 py-10 border-b border-slate-200">
+    <div class="max-w-4xl mx-auto px-4 sm:px-6">
+        <span class="text-xs font-bold uppercase tracking-wider text-brand-600 bg-emerald-50 px-3 py-1 rounded-full">
+            EthAum PRD Section 2 &bull; Help Centre
+        </span>
+        <h1 class="text-3xl sm:text-4xl font-black text-slate-900 mt-2">Help Centre & Travel FAQs</h1>
+        <p class="text-slate-600 text-xs sm:text-sm mt-1">
+            Learn how transparent quotes work, understand JCI international clinical standards, and prepare for your medical journey.
+        </p>
+    </div>
+</div>
+
+<div class="max-w-4xl mx-auto px-4 sm:px-6 py-12 space-y-6">
+    <!-- FAQ Accordion -->
+    <div class="bg-white rounded-3xl p-6 sm:p-8 border border-slate-200 shadow-sm space-y-6">
+        <div class="border-b border-slate-100 pb-5">
+            <h3 class="text-base font-bold text-slate-900">What makes MedVoyage quotes truly transparent?</h3>
+            <p class="text-xs text-slate-600 mt-2 leading-relaxed">
+                Unlike traditional aggregators that show deceptive "from $1,500" prices, every MedVoyage proposal is decomposed into OR facility charges, surgeon fees, private recovery suite days, anesthesia, and medical implants. Crucially, we mandate disclosure of potential out-of-pocket costs such as additional ICU nights or post-discharge medications.
+            </p>
+        </div>
+
+        <div class="border-b border-slate-100 pb-5">
+            <h3 class="text-base font-bold text-slate-900">How does the AI Provider Matching Engine rank hospitals?</h3>
+            <p class="text-xs text-slate-600 mt-2 leading-relaxed">
+                The engine evaluates three core vectors: Clinical Specialty Acuity (40% weight, checking surgeon years of experience, procedure volume, and board certifications), Budget Boundaries (35% weight, ensuring the package meets your price expectations), and Logistics (25% weight, verifying medical visa ease, flight connectivity, and language interpreters).
+            </p>
+        </div>
+
+        <div class="border-b border-slate-100 pb-5">
+            <h3 class="text-base font-bold text-slate-900">What is Joint Commission International (JCI) accreditation?</h3>
+            <p class="text-xs text-slate-600 mt-2 leading-relaxed">
+                JCI is the worldwide gold standard in healthcare safety, infection control, and clinical governance. MedVoyage partners only with hospitals possessing verified JCI accreditation, eliminating unvetted or low-quality regional clinics.
+            </p>
+        </div>
+
+        <div class="border-b border-slate-100 pb-5">
+            <h3 class="text-base font-bold text-slate-900">What happens during the 90-day aftercare period?</h3>
+            <p class="text-xs text-slate-600 mt-2 leading-relaxed">
+                Your medical journey does not end at hospital discharge. Through our encrypted telehealth portal, you have structured milestones on Day 1, 3, 7, 14, 30, and 90. You can submit recovery images, verify range-of-motion, and have remote check-ins with your operating surgeon from the comfort of your home.
+            </p>
+        </div>
+
+        <div>
+            <h3 class="text-base font-bold text-slate-900">How does the 5% Healthcare Partner Referral Program work?</h3>
+            <p class="text-xs text-slate-600 mt-2 leading-relaxed">
+                Clinics, family doctors, and healthcare professionals can refer patients requiring specialized surgeries overseas. Upon successful treatment completion and hospital settlement, the referring partner receives a 5% commission on the billed amount, tracked transparently on our platform ledger.
+            </p>
+        </div>
+    </div>
+</div>
+{% endblock %}

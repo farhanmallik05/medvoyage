@@ -136,3 +136,66 @@ class AftercareMilestone(BaseModel):
     instructions: str
     is_completed: bool = False
     telehealth_checkin_required: bool = False
+
+
+class LeadStatus(str, Enum):
+    NEW = "NEW"
+    QUALIFIED = "QUALIFIED"
+    MEDICAL_REVIEW = "MEDICAL_REVIEW"
+    QUOTE_REQUESTED = "QUOTE_REQUESTED"
+    QUOTE_SENT = "QUOTE_SENT"
+    CONSULTATION = "CONSULTATION"
+    BOOKED = "BOOKED"
+    TREATMENT = "TREATMENT"
+    AFTERCARE = "AFTERCARE"
+    CLOSED = "CLOSED"
+
+
+class PatientCase(BaseModel):
+    id: str = Field(default_factory=lambda: f"case-{uuid.uuid4().hex[:8]}")
+    inquiry_id: str
+    patient_name: str
+    patient_email: str
+    treatment_id: str
+    status: LeadStatus = LeadStatus.NEW
+    assigned_provider_id: Optional[str] = None
+    uploaded_files: List[str] = Field(default_factory=list)
+    clinical_notes: Optional[str] = None
+    created_at: datetime = Field(default_factory=utc_now)
+    updated_at: datetime = Field(default_factory=utc_now)
+
+
+class ProviderReview(BaseModel):
+    id: str = Field(default_factory=lambda: f"rev-{uuid.uuid4().hex[:8]}")
+    provider_id: str
+    patient_name: str
+    patient_country: str
+    treatment_name: str
+    rating: float  # 1.0 to 5.0
+    comment: str
+    verified_patient: bool = True
+    created_at: datetime = Field(default_factory=utc_now)
+
+
+class ReferralRecord(BaseModel):
+    id: str = Field(default_factory=lambda: f"ref-{uuid.uuid4().hex[:8]}")
+    referrer_name: str
+    referrer_type: str  # Clinic, Doctor, Nurse, Medical Partner
+    referrer_email: str
+    patient_name: str
+    booking_id: Optional[str] = None
+    billed_amount_usd: float = 0.0
+    commission_pct: float = 5.0  # 5% commission per EthAum PRD
+    commission_earned_usd: float = 0.0
+    status: str = "PENDING"  # PENDING, APPROVED, PAID
+    created_at: datetime = Field(default_factory=utc_now)
+
+
+class Notification(BaseModel):
+    id: str = Field(default_factory=lambda: f"notif-{uuid.uuid4().hex[:8]}")
+    recipient: str  # e.g., "patient", "provider", or user email
+    title: str
+    message: str
+    category: str = "general"  # inquiry, quote, booking, aftercare
+    is_read: bool = False
+    created_at: datetime = Field(default_factory=utc_now)
