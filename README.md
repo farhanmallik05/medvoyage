@@ -9,6 +9,22 @@ MedVoyage is an AI-powered medical tourism marketplace designed to eliminate pri
 
 ---
 
+## 📸 Platform Walkthrough & Screenshots
+
+| 1. Homepage & Discovery | 2. Decomposed Quote Comparison |
+|---|---|
+| ![Homepage](docs/screenshots/01_homepage.png) | ![Compare Quotes](docs/screenshots/03_quote_comparison.png) |
+
+| 3. Hospital Lead Inbox (CRM) | 4. Executive CRM Analytics Dashboard |
+|---|---|
+| ![Hospital Leads](docs/screenshots/07_hospital_crm_leads.png) | ![CRM Analytics](docs/screenshots/08_crm_analytics.png) |
+
+| 5. Clinical NLP Record Extractor | 6. 90-Day Continuous Aftercare Pathway |
+|---|---|
+| ![NLP Extractor](docs/screenshots/05_nlp_extractor.png) | ![Aftercare](docs/screenshots/06_aftercare_milestones.png) |
+
+---
+
 ## 🌟 The Core Differentiator: Transparent Treatment Comparison
 Rather than building an opaque hospital directory with misleading "prices starting from" teaser rates, MedVoyage decomposes every procedure package into full itemized clarity:
 
